@@ -1,15 +1,15 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import session from "express-session";
 import pgSession from "connect-pg-simple";
 import methodOverride from "method-override";
-import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
 import publicRoutes from "./src/routes/public.routes.js";
 import { errorHandler } from "./src/middleware/error-handler.js";
 
-dotenv.config();
 
 /* -----------------------------
    Path setup for ESM
@@ -44,6 +44,7 @@ app.use(
     store: new PgSession({
       conString: process.env.DATABASE_URL,
       tableName: "session",
+      createTableIfMissing: true,
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
