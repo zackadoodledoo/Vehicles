@@ -9,6 +9,8 @@ import { fileURLToPath } from "url";
 import authRoutes from "./src/routes/auth.routes.js";
 import publicRoutes from "./src/routes/public.routes.js";
 import { errorHandler } from "./src/middleware/error-handler.js";
+import dashboardRoutes from "./src/routes/dashboard.routes.js";
+
 
 
 /* -----------------------------
@@ -66,6 +68,7 @@ app.use(express.static(path.join(__dirname, "src", "public")));
 -------------------------------- */
 app.use("/", publicRoutes);
 app.use(authRoutes);
+app.use(dashboardRoutes);
 
 
 /* -----------------------------
