@@ -10,6 +10,7 @@ import authRoutes from "./src/routes/auth.routes.js";
 import publicRoutes from "./src/routes/public.routes.js";
 import { errorHandler } from "./src/middleware/error-handler.js";
 import dashboardRoutes from "./src/routes/dashboard.routes.js";
+import pool from "./src/db/index.js";
 
 
 
@@ -43,19 +44,20 @@ app.use(methodOverride("_method"));
 -------------------------------- */
 app.use(
   session({
-    store: new PgSession({
-      conString: process.env.DATABASE_URL,
-      tableName: "session",
-      createTableIfMissing: true,
-    }),
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      sameSite: "lax",
-    },
-  })
+      store: new PgSession({
+         pool,
+         tableName: "session",
+         createTableIfMissing: true,
+      }),
+
+         secret: process.env.SESSION_SECRET,
+         resave: false,
+         saveUninitialized: false,
+         cookie: {
+            httpOnly: true,
+            sameSite: "lax",
+         },
+   })
 );
 
 /* -----------------------------
