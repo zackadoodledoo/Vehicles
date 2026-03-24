@@ -57,6 +57,8 @@ export async function processLogin(req, res) {
  */
 export function logout(req, res) {
   req.session.destroy(() => {
+    console.log("LOGIN SUCCESS — creating session");
+
     res.redirect("/login");
   });
 }
