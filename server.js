@@ -11,6 +11,7 @@ import publicRoutes from "./src/routes/public.routes.js";
 import { errorHandler } from "./src/middleware/error-handler.js";
 import dashboardRoutes from "./src/routes/dashboard.routes.js";
 import pool from "./src/db/index.js";
+import adminRoutes from "./src/routes/admin.routes.js";
 
 
 
@@ -71,6 +72,7 @@ app.use(express.static(path.join(__dirname, "src", "public")));
 app.use("/", publicRoutes);
 app.use(authRoutes);
 app.use(dashboardRoutes);
+app.use(adminRoutes);
 
 
 /* -----------------------------
