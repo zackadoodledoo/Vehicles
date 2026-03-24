@@ -1,0 +1,17 @@
+<nav>
+  <a href="/">Home</a>
+
+  <% if (user) { %>
+    <a href="/dashboard">Dashboard</a>
+
+    <% if (user.role === "owner") { %>
+      <a href="/admin">Admin</a>
+    <% } %>
+
+    <form action="/logout" method="POST" style="display:inline;">
+      <button type="submit">Logout</button>
+    </form>
+  <% } else { %>
+    <a href="/login">Login</a>
+  <% } %>
+</nav>
