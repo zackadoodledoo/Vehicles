@@ -1,0 +1,59 @@
+<%- include('partials/header', { title: title }) %>
+
+<main class="container">
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Find Your Next Vehicle</h1>
+      <p>Quality used vehicles inspected and ready. Browse by category or search for a specific make and model.</p>
+      <p>
+        <a class="btn btn-primary" href="/vehicles">Browse Vehicles</a>
+        <a class="btn btn-secondary" href="/contact">Contact Us</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="categories">
+    <h2>Browse by Category</h2>
+    <div class="category-list">
+      <% if (categories && categories.length) { %>
+        <% categories.forEach(cat => { %>
+          <a class="category-tile" href="/vehicles?category=<%= encodeURIComponent(cat.slug) %>">
+            <span><%= cat.name %></span>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <p>No categories yet.</p>
+      <% } %>
+    </div>
+  </section>
+
+  <section class="featured">
+  <h2>Featured Vehicles</h2>
+
+  <div class="cards" role="list">
+    <% if (featured && featured.length) { %>
+      <% featured.forEach(v => {
+           const title = (v.make || '') ? `${v.year || ''} ${v.make || ''} ${v.model || ''}`.trim() : (v.model || v.title || 'Vehicle');
+           const shortTitle = title.length > 40 ? title.slice(0, 37) + '...' : title;
+           const price = v.price ? Number(v.price).toLocaleString() : 'Contact';
+           const img = v.image_url || '/images/placeholder-vehicle.jpg';
+      %>
+        <article class="card" role="listitem" aria-labelledby="veh-<%= v.id %>">
+          <a href="/vehicles/<%= v.id %>" class="card-link">
+            <img src="<%= img %>" alt="<%= title %>" loading="lazy" class="card-img" />
+            <div class="card-body">
+              <h3 id="veh-<%= v.id %>" class="card-title"><%= shortTitle %></h3>
+              <p class="card-meta"><%= v.year || '' %> • <span class="price">$<%= price %></span></p>
+            </div>
+          </a>
+        </article>
+      <% }) %>
+    <% } else { %>
+      <p>No featured vehicles at the moment.</p>
+    <% } %>
+  </div>
+</section>
+
+</main>
+
+<%- include('partials/footer') %>

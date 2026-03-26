@@ -1,9 +1,9 @@
 // src/middleware/error-handler.js
 export default function errorHandler(err, req, res, next) {
-  // Log the full error for server-side debugging
+  // Server-side debug log
   console.error('🔥 REAL ERROR:', err);
 
-  // Avoid double responses
+  // If response already sent, delegate to default Express handler
   if (res.headersSent || res.finished) {
     return next(err);
   }
@@ -14,16 +14,14 @@ export default function errorHandler(err, req, res, next) {
   const context = {
     title: status === 404 ? 'Page Not Found' : 'Server Error',
     error: isProd ? 'An error occurred' : err.message,
-    stack: isProd ? null : err.stack,
-    NODE_ENV: process.env.NODE_ENV || 'development'
+    stack: isProd ? null : err.stack
   };
 
-  // Try to render an error view, fall back to plain text
   try {
     res.status(status).render(`errors/${status === 404 ? '404' : '500'}`, context);
   } catch (renderErr) {
     if (!res.headersSent) {
-      res.status(status).send(`<h1>Error ${status}</h1><pre>${context.error}</pre>`);
+      res.status(status).send(`<h1>${context.title}</h1><pre>${context.error}</pre>`);
     }
   }
 }
