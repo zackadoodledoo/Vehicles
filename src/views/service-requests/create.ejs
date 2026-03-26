@@ -1,0 +1,19 @@
+<%- include("../partials/header") %>
+
+<h1>Request Vehicle Service</h1>
+
+<form action="/service-requests" method="POST">
+  <label>
+    Vehicle ID:
+    <input type="number" name="vehicle_id" />
+  </label>
+
+  <label>
+    Service Request:
+    <textarea name="message" required></textarea>
+  </label>
+
+  <button type="submit">Submit Request</button>
+</form>
+
+<%- include("../partials/footer") %>

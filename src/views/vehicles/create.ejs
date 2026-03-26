@@ -1,0 +1,35 @@
+<%- include("../partials/header") %>
+
+<h1>Add New Vehicle</h1>
+
+<form action="/vehicles" method="POST">
+  <label>
+    Make:
+    <input type="text" name="make" required />
+  </label>
+
+  <label>
+    Model:
+    <input type="text" name="model" required />
+  </label>
+
+  <label>
+    Year:
+    <input type="number" name="year" required />
+  </label>
+
+  <label>
+  Mileage:
+  <input type="number" name="mileage" required />
+  </label>
+
+
+  <label>
+    Price:
+    <input type="number" name="price" required />
+  </label>
+
+  <button type="submit">Create Vehicle</button>
+</form>
+
+<%- include("../partials/footer") %>

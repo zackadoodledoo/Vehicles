@@ -1,0 +1,11 @@
+<%- include("../partials/header") %>
+
+<h1><%= vehicle.title %></h1>
+
+<p><strong>Year:</strong> <%= vehicle.year %></p>
+<p><strong>Price:</strong> $<%= vehicle.price %></p>
+<p><strong>Mileage:</strong> <%= vehicle.mileage %></p>
+
+<a href="/vehicles">← Back to listings</a>
+
+<%- include("../partials/footer") %>

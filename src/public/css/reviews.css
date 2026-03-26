@@ -1,0 +1,18 @@
+.reviews {
+  margin-top: 3rem;
+  border-top: 2px solid var(--purple-light);
+  padding-top: 2rem;
+}
+
+.review-item {
+  background: var(--gray-light);
+  border-left: 6px solid var(--purple-main);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+}
+
+.review-form button {
+  background: var(--purple-main);
+  color: white;
+}
