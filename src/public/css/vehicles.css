@@ -1,15 +1,10 @@
-.vehicle-card {
-  border: 1px solid var(--border-soft);
-  border-radius: 8px;
-  padding: 1rem;
-  background: white;
-}
 
-.vehicle-card h3 {
-  color: var(--purple-dark);
-}
-
-.vehicle-price {
-  font-weight: bold;
-  color: var(--purple-main);
+.vehicles-page .card-img,
+.vehicles-page .image-wrap img {
+  width: 100%;
+  height: 160px;            /* same as home */
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: #f4f4f4;
 }

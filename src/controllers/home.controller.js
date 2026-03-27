@@ -1,4 +1,3 @@
-// src/controllers/home.controller.js
 import pool from '../db/index.js';
 
 function splitTitleToParts(title = '') {
@@ -39,7 +38,7 @@ export async function renderHome(req, res, next) {
         model: parts.model,
         year: v.year,
         price: v.price,
-        image_url: isTruckView ? '/images/placeholder-truck.svg' : '/images/placeholder-vehicle.jpg'
+        image_url: isTruckView ? '/images/placeholder-truck.jpg' : '/images/placeholder-vehicle.jpg'
       };
     });
 

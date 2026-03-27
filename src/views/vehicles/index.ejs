@@ -1,16 +1,34 @@
-<%- include("../partials/header") %>
+<%- include('../partials/header', { title: 'Browse Vehicles', bodyClass: 'vehicles-page' }) %>
 
-<h1>Available Vehicles</h1>
+<section class="vehicles-list">
+  <h1>Browse Vehicles</h1>
 
-<ul>
-  <% vehicles.forEach(vehicle => { %>
-    <li>
-      <a href="/vehicles/<%= vehicle.id %>">
-        <strong><%= vehicle.title %></strong>
-      </a>
-      — $<%= vehicle.price %>
-    </li>
-  <% }) %>
-</ul>
+  <div class="cards-grid">
+    <% if (vehicles && vehicles.length) { %>
+      <% vehicles.forEach(function(vehicle) { %>
+        <article class="card vehicle-card">
+          <div class="image-wrap">
+            <img class="card-img" src="<%= (vehicle && vehicle.image_url && vehicle.image_url.trim()) ? vehicle.image_url : '/images/placeholder-vehicle.jpg' %>" alt="<%= (vehicle && (vehicle.make || vehicle.model)) ? ((vehicle.make || '') + ' ' + (vehicle.model || '')) : 'Vehicle' %>" loading="lazy" onerror="this.onerror=null;this.src='/images/placeholder-vehicle.jpg'">
+          </div>
 
-<%- include("../partials/footer") %>
+
+          <div class="card-body">
+            <h3 class="card-title">
+              <a href="/vehicles/<%= vehicle.id %>"><%= (vehicle && vehicle.title) ? vehicle.title : 'Vehicle' %></a>
+            </h3>
+            <p class="card-meta">
+              <span class="price">$<%= (vehicle && typeof vehicle.price !== 'undefined' && vehicle.price !== null) ? Number(vehicle.price).toLocaleString() : '0' %></span>
+              <% if (vehicle && vehicle.mileage) { %>
+                <span class="mileage"><%= Number(vehicle.mileage).toLocaleString() %> mi</span>
+              <% } %>
+            </p>
+          </div>
+        </article>
+      <% }); %>
+    <% } else { %>
+      <p>No vehicles found.</p>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

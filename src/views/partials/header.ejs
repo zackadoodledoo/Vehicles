@@ -1,17 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Less New Cars App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= title || 'My App' %></title>
 
+  <!-- CSS load order: base -> layout -> page-specific -> overrides -->
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/layout.css">
-  <%- renderStyles() %>
-
+  <link rel="stylesheet" href="/css/vehicles.css">
+  <link rel="stylesheet" href="/css/reviews.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
 </head>
-<body>
+<body class="<%= typeof bodyClass !== 'undefined' ? bodyClass : '' %>">
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/vehicles">Vehicles</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/login">Login</a></li>
+      </ul>
+    </nav>
+  </header>
 
-  <%- include("nav") %>
-
-  <main>
+  <main class="container" role="main">

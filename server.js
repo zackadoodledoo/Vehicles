@@ -125,8 +125,6 @@ app.use(vehicleRoutes);
 app.use(serviceRequestRoutes);
 app.use(reviewRoutes);
 
-// ROUTE INSPECTION (paste right after app.use(reviewRoutes);)
-console.log('DEBUG: per-router route listing (remove in production)');
 
 const mountedRouters = [
   { name: 'publicRoutes', mount: '/', router: publicRoutes },
@@ -138,47 +136,7 @@ const mountedRouters = [
   { name: 'reviewRoutes', mount: '/', router: reviewRoutes }
 ];
 
-mountedRouters.forEach(({ name, mount, router }) => {
-  if (!router) {
-    console.log(`${name}: NOT IMPORTED`);
-    return;
-  }
-  console.log(`\n${name} (mounted at "${mount}") - stack length: ${Array.isArray(router.stack) ? router.stack.length : 'N/A'}`);
-  if (Array.isArray(router.stack)) {
-    router.stack.forEach((layer, i) => {
-      try {
-        if (layer && layer.route && layer.route.path) {
-          const methods = Object.keys(layer.route.methods).join(',').toUpperCase();
-          console.log(`  ${i}: ${methods} ${mount}${layer.route.path}`);
-        } else if (layer && layer.name === 'router' && layer.handle && Array.isArray(layer.handle.stack)) {
-          layer.handle.stack.forEach((r) => {
-            if (r && r.route && r.route.path) {
-              const methods = Object.keys(r.route.methods).join(',').toUpperCase();
-              console.log(`  ${i}: ${methods} ${mount}${r.route.path}`);
-            }
-          });
-        } else {
-          const info = `layer name=${layer && layer.name} regexp=${layer && layer.regexp && layer.regexp.source}`;
-          console.log(`  ${i}: ${info}`);
-        }
-      } catch (e) {
-        console.log(`  ${i}: error inspecting layer: ${e && e.message}`);
-      }
-    });
-  }
-});
-console.log('\nEND ROUTE LISTING\n');
 
-
-// DEBUG: check router registration (remove in production)
-console.log('DEBUG: checking router registration...');
-
-console.log('app._router exists:', !!app._router);
-if (app._router) {
-  console.log('app._router.stack length:', Array.isArray(app._router.stack) ? app._router.stack.length : 'no stack array');
-} else {
-  console.log('app._router is undefined or null');
-}
 
 const routersToCheck = {
   publicRoutes,
@@ -189,41 +147,6 @@ const routersToCheck = {
   serviceRequestRoutes,
   reviewRoutes
 };
-
-Object.entries(routersToCheck).forEach(([name, r]) => {
-  if (!r) {
-    console.log(`${name}: NOT IMPORTED (undefined/null)`);
-    return;
-  }
-  const isRouter = Array.isArray(r.stack);
-  console.log(`${name}: type=${typeof r} ; isRouter=${isRouter} ; stackLength=${isRouter ? r.stack.length : 'N/A'}`);
-});
-
-if (app._router && Array.isArray(app._router.stack)) {
-  console.log('--- Registered routes (app._router.stack) ---');
-  app._router.stack.forEach((layer, i) => {
-    try {
-      if (layer && layer.route && layer.route.path) {
-        const methods = Object.keys(layer.route.methods).join(',').toUpperCase();
-        console.log(`${i}: ${methods} ${layer.route.path}`);
-        return;
-      }
-      if (layer && layer.name === 'router' && layer.handle && Array.isArray(layer.handle.stack)) {
-        layer.handle.stack.forEach((r) => {
-          if (r && r.route && r.route.path) {
-            const methods = Object.keys(r.route.methods).join(',').toUpperCase();
-            console.log(`${i}: ${methods} ${r.route.path}`);
-          }
-        });
-        return;
-      }
-      console.log(`${i}: LAYER name=${layer && layer.name} ; regexp=${layer && layer.regexp && layer.regexp.source}`);
-    } catch (e) {
-      console.log(`${i}: error inspecting layer:`, e && e.message);
-    }
-  });
-  console.log('--------------------------------------------');
-}
 
 
 

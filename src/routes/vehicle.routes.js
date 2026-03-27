@@ -1,9 +1,8 @@
+// src/routes/vehicle.routes.js
 import { Router } from "express";
 import { requireLogin } from "../middleware/require-login.js";
 import { requireRole } from "../middleware/require-role.js";
-import {showCreateVehicleForm, createVehicle, } from "../controllers/vehicle.controller.js";
-import { showVehicleDetails, showVehicleListings } from "../controllers/vehicle.controller.js";
-
+import { newVehicleForm, createVehicle, showVehicleDetails, showVehicleListings } from "../controllers/vehicle.controller.js";
 
 const router = Router();
 
@@ -17,7 +16,7 @@ router.use((req, res, next) => {
 router.get("/vehicles", showVehicleListings);
 router.get("/vehicles/:id", showVehicleDetails);
 
-router.get("/vehicles/new", requireLogin, requireRole("owner"), showCreateVehicleForm);
+router.get("/vehicles/new", requireLogin, requireRole("owner"), newVehicleForm);
 
 router.post(
   "/vehicles",

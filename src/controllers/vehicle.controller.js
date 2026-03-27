@@ -1,86 +1,163 @@
 // src/controllers/vehicle.controller.js
-import pool from "../db/index.js";
-import { getVehicleById } from "../models/vehicle.model.js";
+// Controller for vehicle routes (index, show, new, create).
+// Uses ES module exports to match a modern Node setup.
+// Assumes you have a `db` or `pool` module that exposes query execution.
+// Adjust the DB calls to match your project's data access layer.
 
-function splitTitleToParts(title = '') {
-  const t = (title || '').toString().trim();
-  const withoutYear = t.replace(/^\s*\d{4}\s*/, '');
-  const parts = withoutYear.split(/\s+/);
-  return {
-    make: parts.length > 1 ? parts[0] : '',
-    model: parts.length > 1 ? parts.slice(1).join(' ') : withoutYear || t
-  };
+import pool from '../db/index.js'; // adjust path if your DB client is elsewhere
+import { splitTitleToParts } from '../lib/helpers.js'; // optional helper used elsewhere; adjust or inline if missing
+
+// Helper: choose placeholder based on category slug
+function placeholderForCategory(slug) {
+  const s = (slug || '').toString().toLowerCase();
+  if (s === 'trucks') return '/images/placeholder-truck.jpg';
+  if (s === 'vans') return '/images/placeholder-van.jpg';
+  return '/images/placeholder-vehicle.jpg';
 }
 
-export function showCreateVehicleForm(req, res) {
-  res.render("vehicles/create");
-}
-
-export async function createVehicle(req, res, next) {
-  try {
-    const { make, model, year, price, mileage } = req.body;
-
-    const title = `${year} ${make} ${model}`;
-    const description = `${make} ${model}`;
-
-    await pool.query(
-      `INSERT INTO vehicles (title, description, year, price, mileage)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [title, description, year, price, mileage]
-    );
-
-    res.redirect("/dashboard");
-  } catch (err) {
-    next(err);
+// Normalize a single image URL (ensures no .svg placeholders leak through)
+function normalizeImageUrl(rawUrl, categorySlug) {
+  if (rawUrl && typeof rawUrl === 'string' && rawUrl.trim()) {
+    return rawUrl.trim();
   }
+  return placeholderForCategory(categorySlug);
 }
 
+/**
+ * GET /vehicles
+ * Render a paginated list of vehicles.
+ */
 export async function showVehicleListings(req, res, next) {
   try {
-    const categorySlug = (req.query.category || '').toString().toLowerCase();
+    // Accept optional category and page query params
+    const categorySlug = req.query.category || null;
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = 24;
+    const offset = (page - 1) * limit;
 
-    const params = categorySlug ? [categorySlug, 24] : [24];
-    const vehiclesResult = await pool.query(
-      `SELECT v.id, v.title, v.year, v.price, c.slug AS category_slug
-       FROM vehicles v
-       LEFT JOIN categories c ON v.category_id = c.id
-       ${categorySlug ? 'WHERE c.slug = $1' : ''}
-       ORDER BY v.created_at DESC
-       LIMIT $2`,
-      params
-    );
+    // Example SQL - adjust to your schema
+    const sql = `
+      SELECT v.id, v.title, v.price, v.mileage, v.image_url, c.slug AS category_slug, v.year
+      FROM vehicles v
+      LEFT JOIN categories c ON v.category_id = c.id
+      WHERE ($1::text IS NULL OR c.slug = $1::text)
+      ORDER BY v.created_at DESC
+      LIMIT $2 OFFSET $3
+    `;
+    const params = [categorySlug, limit, offset];
+    const result = await pool.query(sql, params);
 
-    const vehicles = (vehiclesResult.rows || []).map(v => {
-      const parts = splitTitleToParts(v.title || '');
+    // Normalize rows and image_url
+    const vehicles = (result.rows || []).map((v) => {
+      const parts = splitTitleToParts ? splitTitleToParts(v.title || '') : { make: '', model: '' };
       const rowSlug = (v.category_slug || categorySlug || '').toString().toLowerCase();
-      const isTruck = rowSlug === 'trucks';
-      const isVan = rowSlug === 'vans';
+
+      const image_url = normalizeImageUrl(v.image_url, rowSlug);
+
       return {
         id: v.id,
+        title: v.title,
         make: parts.make,
         model: parts.model,
         year: v.year,
         price: v.price,
-        image_url: v.image_url || (isTruck
-          ? '/images/placeholder-truck.jpg'
-          : isVan
-            ? '/images/placeholder-van.svg'
-            : '/images/placeholder-vehicle.jpg')
+        mileage: v.mileage || null,
+        image_url,
+        category_slug: v.category_slug || null
       };
     });
 
-    return res.render("vehicles/index", { vehicles, category: categorySlug });
+    // Debug log (keeps parity with your existing logs)
+    console.log('DEBUG showVehicleListings params:', [categorySlug, limit]);
+    console.log('DEBUG vehicles image urls:', vehicles.map(v => ({ id: v.id, image_url: v.image_url })));
+
+    return res.render('vehicles/index', {
+      vehicles,
+      page,
+      category: categorySlug
+    });
   } catch (err) {
+    console.error('showVehicleListings error:', err);
     return next(err);
   }
 }
 
+/**
+ * GET /vehicles/:id
+ * Render a single vehicle detail page.
+ */
 export async function showVehicleDetails(req, res, next) {
   try {
-    const vehicle = await getVehicleById(req.params.id);
-    if (!vehicle) return res.status(404).render("404");
-    res.render("vehicles/show", { vehicle });
+    const id = req.params.id;
+    if (!id) return res.status(400).send('Vehicle id required');
+
+    // Example SQL - adjust to your schema
+    const sql = `
+      SELECT v.*, c.slug AS category_slug
+      FROM vehicles v
+      LEFT JOIN categories c ON v.category_id = c.id
+      WHERE v.id = $1
+      LIMIT 1
+    `;
+    const result = await pool.query(sql, [id]);
+    const vehicle = result.rows && result.rows[0];
+
+    console.log('DEBUG getVehicleById result:', vehicle);
+
+    if (!vehicle) {
+      // Render a 404 page or forward to next with a 404 error
+      const err = new Error('Page Not Found');
+      err.status = 404;
+      return next(err);
+    }
+
+    // Normalize image_url (choose placeholder based on category)
+    const image_url = normalizeImageUrl(vehicle.image_url, vehicle.category_slug);
+
+    // Render view with normalized vehicle object
+    return res.render('vehicles/show', {
+      vehicle: { ...vehicle, image_url }
+    });
   } catch (err) {
-    next(err);
+    console.error('showVehicleDetails error:', err);
+    return next(err);
+  }
+}
+
+/**
+ * GET /vehicles/new
+ * Render the create vehicle form.
+ */
+export function newVehicleForm(req, res) {
+  return res.render('vehicles/create', { vehicle: {} });
+}
+
+/**
+ * POST /vehicles
+ * Create a new vehicle (basic example).
+ * Adjust validation and DB insert to match your schema and security needs.
+ */
+export async function createVehicle(req, res, next) {
+  try {
+    const { title, year, make, model, price, mileage, image_url, category_id, description } = req.body;
+
+    // Basic validation (expand as needed)
+    if (!title || !year) {
+      return res.status(400).render('vehicles/create', { vehicle: req.body, error: 'Title and year are required.' });
+    }
+
+    const sql = `
+      INSERT INTO vehicles (title, year, make, model, price, mileage, image_url, category_id, description, created_at)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9, NOW())
+      RETURNING id
+    `;
+    const params = [title, year, make || null, model || null, price || null, mileage || null, image_url || null, category_id || null, description || null];
+    const result = await pool.query(sql, params);
+    const newId = result.rows && result.rows[0] && result.rows[0].id;
+
+    return res.redirect(`/vehicles/${newId}`);
+  } catch (err) {
+    console.error('createVehicle error:', err);
+    return next(err);
   }
 }

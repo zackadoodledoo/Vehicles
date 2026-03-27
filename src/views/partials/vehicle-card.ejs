@@ -1,0 +1,28 @@
+<article class="card vehicle-card">
+  <a class="card-link" href="/vehicles/<%= vehicle.id %>">
+    <div class="image-wrap" aria-hidden="true">
+      <img
+        class="card-img"
+        src="<%= vehicle.image_url || '/images/placeholder-vehicle.jpg' %>"
+        alt="<%= (vehicle.make || '') + ' ' + (vehicle.model || '') %>"
+        loading="lazy"
+      >
+    </div>
+
+    <div class="card-body">
+      <h3 class="card-title">
+        <%= vehicle.year ? vehicle.year + ' ' : '' %><%= vehicle.make %> <%= vehicle.model %>
+      </h3>
+
+      <p class="card-meta">
+        <span class="text-muted"><%= vehicle.mileage ? (Number(vehicle.mileage).toLocaleString() + ' mi') : '' %></span>
+        <span class="price"><%= vehicle.price ? ('$' + Number(vehicle.price).toLocaleString()) : 'Contact' %></span>
+      </p>
+
+      <div class="card-actions" aria-hidden="true">
+        <button class="btn" type="button">View</button>
+        <button class="btn secondary" type="button">Contact</button>
+      </div>
+    </div>
+  </a>
+</article>

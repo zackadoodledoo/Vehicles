@@ -6,6 +6,21 @@
 <p>Welcome, <%= user.name %></p>
 <p>Role: <%= user.role %></p>
 
+<section class="categories">
+    <h2>Browse by Category</h2>
+    <div class="category-list">
+      <% if (categories && categories.length) { %>
+        <% categories.forEach(cat => { %>
+          <a class="category-tile" href="/vehicles?category=<%= encodeURIComponent(cat.slug) %>">
+            <span><%= cat.name %></span>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <p>No categories yet.</p>
+      <% } %>
+    </div>
+  </section>
+
 <a href="/logout">Logout</a>
 
 <%- include("partials/nav") %>
