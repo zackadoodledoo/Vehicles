@@ -2,7 +2,8 @@
 
 <article class="vehicle-detail card">
   <div class="image-wrap">
-    <img class="card-img" src="<%= (vehicle && vehicle.image_url && vehicle.image_url.trim()) ? vehicle.image_url : '/images/placeholder-vehicle.jpg' %>" alt="<%= vehicle && vehicle.title ? vehicle.title : 'Vehicle' %>" loading="lazy" onerror="this.onerror=null;this.src='/images/placeholder-vehicle.jpg'">
+    <img class="card-img" src="<%= vehicle.image_url %>" alt="<%= vehicle.title %>" loading="lazy" onerror="this.onerror=null;this.src='/images/placeholder-vehicle.jpg'">
+
   </div>
 
 

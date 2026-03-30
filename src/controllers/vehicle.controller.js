@@ -16,12 +16,31 @@ function placeholderForCategory(slug) {
 }
 
 // Normalize a single image URL (ensures no .svg placeholders leak through)
-function normalizeImageUrl(rawUrl, categorySlug) {
-  if (rawUrl && typeof rawUrl === 'string' && rawUrl.trim()) {
-    return rawUrl.trim();
+function resolveVehicleImage(vehicle) {
+  // Explicit vehicle image (from DB)
+  if (
+    vehicle.image_url &&
+    typeof vehicle.image_url === "string" &&
+    vehicle.image_url.trim() &&
+    !vehicle.image_url.endsWith(".svg")
+  ) {
+    return vehicle.image_url.trim();
   }
-  return placeholderForCategory(categorySlug);
+
+  // Make + model image (static asset)
+  if (vehicle.make && vehicle.model) {
+    const slug = `${vehicle.make}-${vehicle.model}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-");
+
+    return `/images/vehicles/makes/${slug}.jpg`;
+  }
+
+  // Category placeholder
+  return placeholderForCategory(vehicle.category_slug);
 }
+
+
 
 /**
  * GET /vehicles
@@ -52,7 +71,13 @@ export async function showVehicleListings(req, res, next) {
       const parts = splitTitleToParts ? splitTitleToParts(v.title || '') : { make: '', model: '' };
       const rowSlug = (v.category_slug || categorySlug || '').toString().toLowerCase();
 
-      const image_url = normalizeImageUrl(v.image_url, rowSlug);
+      const image_url = resolveVehicleImage({
+        image_url: v.image_url,
+        make: parts.make,
+        model: parts.model,
+        category_slug: rowSlug
+});
+
 
       return {
         id: v.id,
@@ -102,6 +127,11 @@ export async function showVehicleDetails(req, res, next) {
     const result = await pool.query(sql, [id]);
     const vehicle = result.rows && result.rows[0];
 
+    const parts = splitTitleToParts
+      ? splitTitleToParts(vehicle.title || '')
+      : { make: '', model: '' };
+
+
     console.log('DEBUG getVehicleById result:', vehicle);
 
     if (!vehicle) {
@@ -112,7 +142,13 @@ export async function showVehicleDetails(req, res, next) {
     }
 
     // Normalize image_url (choose placeholder based on category)
-    const image_url = normalizeImageUrl(vehicle.image_url, vehicle.category_slug);
+    const image_url = resolveVehicleImage({
+      image_url: vehicle.image_url,
+      make: vehicle.make || parts.make,
+      model: vehicle.model || parts.model,
+      category_slug: vehicle.category_slug
+    });
+
 
     // Render view with normalized vehicle object
     return res.render('vehicles/show', {

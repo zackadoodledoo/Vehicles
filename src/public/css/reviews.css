@@ -16,3 +16,14 @@
   background: var(--purple-main);
   color: white;
 }
+
+.error-image {
+  max-width: 400px;
+  margin: 20px auto;
+  display: block;
+}
+.about-image {
+  max-width: 600px;
+  margin: 20px auto;
+  display: block;
+}

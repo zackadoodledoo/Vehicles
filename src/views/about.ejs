@@ -1,0 +1,54 @@
+<%- include('partials/header') %>
+
+    <h1>ABOUT US: Less New Autos</h1>
+    <h2>Welcome to Less New Autos, the only family-run 
+        automobile shop with a past we’re legally required to 
+        describe as <strong>“colorful.”</strong></h2>
+    <h3>Our Humble Beginnings | 1942 |</h3>
+    <img src="https://i.ibb.co/Ld9jQXFX/al-capone-mugshot.jpg" alt="al-capone-mugshot" class="about-image" border="0"></a>
+    <p>Al Capone's mugshot, an inspiration for my uncle Frank.</p>
+    <p>Back in 1942, our founder Frank “Numbers” Lombardi had a simple dream: 
+        run a successful family business. Unfortunately, that dream originally 
+        involved washing money instead of cars.</p>
+    <p>Operating out of a small garage and an even smaller accounting ledger, 
+        the Lombardi family became very skilled at “cleaning things up.” 
+        Eventually, someone asked the obvious question:</p>
+    <h3>“If we’re already in a garage… why don’t we just sell cars?”</h3>
+    <p><strong>Less New Autos</strong> was born.</p>
+
+    <h2>A Change of Heart (and Business Model)</h2>
+    <p>Over the years, the family decided it was easier—and far less stressful—to 
+        run an honest automobile shop. We pivoted our expertise toward something
+         much more respectable:</p>
+    <h3>Selling cars that are… technically not new. Not old either. Just… Less New.</h3>
+
+
+    <p>Our inventory proudly features vehicles that are:</p>
+        <ul>
+            <li>Pre-loved</li>
+            <li>Mechanically encouraged</li>
+            <li>Already done depreciating... for the most part</li>
+            <li>Extremely welle "cleaned"</li>
+        </ul>
+
+    <h3>Still Family Operated</h3>
+    <p>Today, the shop is run by the third generation of the Lombardi family, who have traded 
+        questionable bookkeeping for honest work, coffee-stained repair manuals, and arguing about 
+        carburetors.</p>
+
+    <section class="categories">
+        <h2>Browse by Category</h2>
+        <div class="category-list">
+            <% if (categories && categories.length) { %>
+                <% categories.forEach(cat => { %>
+                    <a class="category-tile" href="/vehicles?category=<%= encodeURIComponent(cat.slug) %>">
+                        <span><%= cat.name %></span>
+                    </a>
+                <% }) %>
+            <% } else { %>
+        <p>No categories yet.</p>
+      <% } %>
+    </div>
+  </section>
+  
+<%- include('partials/footer') %>

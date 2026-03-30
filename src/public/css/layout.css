@@ -58,3 +58,14 @@ footer {
 .card-meta { color: #666; font-size: .9rem; margin: 0; display:flex; justify-content:space-between; align-items:center; }
 
 .price { font-weight: 700; color: #111; }
+
+.error-image {
+  max-width: 400px;
+  margin: 20px auto;
+  display: block;
+}
+.about-image {
+  max-width: 600px;
+  margin: 20px auto;
+  display: block;
+}

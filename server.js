@@ -15,7 +15,8 @@ import adminRoutes from "./src/routes/admin.routes.js";
 import vehicleRoutes from "./src/routes/vehicle.routes.js";
 import serviceRequestRoutes from "./src/routes/serviceRequest.routes.js";
 import reviewRoutes from "./src/routes/review.routes.js";
-
+import contactRoutes from "./src/routes/contact.routes.js";
+import aboutRoutes from "./src/routes/about.routes.js";
 
 
 
@@ -135,6 +136,8 @@ app.use(adminRoutes);
 app.use(vehicleRoutes);
 app.use(serviceRequestRoutes);
 app.use(reviewRoutes);
+app.use(contactRoutes);
+app.use(aboutRoutes);
 
 
 
@@ -169,7 +172,15 @@ const routersToCheck = {
 ------------------------------ */
 
 app.use((req, res, next) => {
-  const err = new Error('Page Not Found');
+  if (
+    req.path.startsWith("/images") ||
+    req.path.startsWith("/css") ||
+    req.path === "/favicon.ico"
+  ) {
+    return res.status(404).end();
+  }
+
+  const err = new Error("Page Not Found");
   err.status = 404;
   next(err);
 });
