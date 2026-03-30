@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+
+<h1>User Management</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Joined</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% users.forEach(user => { %>
+      <tr>
+        <td><%= user.name %></td>
+        <td><%= user.email %></td>
+        <td><%= user.role %></td>
+        <td><%= new Date(user.created_at).toLocaleDateString() %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<%- include('../partials/footer') %>

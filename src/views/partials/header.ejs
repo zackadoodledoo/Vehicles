@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title><%= title || 'My App' %></title>
+  <title><%= title || 'Less New Cars' %></title>
 
   <!-- CSS load order: base -> layout -> page-specific -> overrides -->
   <link rel="stylesheet" href="/css/base.css">
@@ -18,10 +18,28 @@
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/vehicles">Vehicles</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/login">Login</a></li>
+
+        <% if (!user) { %>
+          <!-- Logged OUT -->
+          <li><a href="/login">Login</a></li>
+          <li><a href="/register">Register</a></li>
+        <% } else { %>
+          <!-- Logged IN -->
+          <li><a href="/dashboard">Dashboard</a></li>
+
+          <% if (user.role === 'owner') { %>
+            <li><a href="/admin">Admin</a></li>
+          <% } %>
+
+          <% if (user.role === 'employee') { %>
+            <li><a href="/employee">Employee</a></li>
+          <% } %>
+
+          <li><a href="/logout">Logout</a></li>
+        <% } %>
       </ul>
     </nav>
+
   </header>
 
   <main class="container" role="main">

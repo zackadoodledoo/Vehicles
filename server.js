@@ -106,6 +106,15 @@ app.use((req, res, next) => {
   next();
 });
 
+/* -----------------------------
+   Provide a default title for all views
+-------------------------------- */
+ 
+app.use((req, res, next) => {
+  res.locals.title = 'Less New Cars - Vehicle Marketplace';
+  next();
+});
+
 
 
 /* -----------------------------

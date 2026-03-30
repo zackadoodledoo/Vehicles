@@ -1,4 +1,3 @@
-// src/db/index.js
 import pkg from 'pg';
 const { Pool } = pkg;
 
