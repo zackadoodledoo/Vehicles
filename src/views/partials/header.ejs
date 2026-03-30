@@ -14,31 +14,33 @@
 </head>
 <body class="<%= typeof bodyClass !== 'undefined' ? bodyClass : '' %>">
   <header>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/vehicles">Vehicles</a></li>
+    <nav class="main-nav">
+      <a href="/">Home</a>
+      <a href="/vehicles">Vehicles</a>
+      <a href="/contact">Contact</a>
 
-        <% if (!user) { %>
-          <!-- Logged OUT -->
-          <li><a href="/login">Login</a></li>
-          <li><a href="/register">Register</a></li>
-        <% } else { %>
-          <!-- Logged IN -->
-          <li><a href="/dashboard">Dashboard</a></li>
+      <% if (!user) { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } else { %>
+        <a href="/dashboard">Dashboard</a>
 
-          <% if (user.role === 'owner') { %>
-            <li><a href="/admin">Admin</a></li>
-          <% } %>
-
-          <% if (user.role === 'employee') { %>
-            <li><a href="/employee">Employee</a></li>
-          <% } %>
-
-          <li><a href="/logout">Logout</a></li>
+        <% if (user.role === 'user') { %>
+          <a href="/service-requests">My Service Requests</a>
         <% } %>
-      </ul>
-    </nav>
+
+        <% if (user.role === 'employee') { %>
+          <a href="/service-requests">Service Requests</a>
+        <% } %>
+
+        <% if (user.role === 'owner') { %>
+          <a href="/admin">Admin</a>
+        <% } %>
+
+          <a href="/logout">Logout</a>
+      <% } %>
+</nav>
+
 
   </header>
 
