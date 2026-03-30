@@ -16,7 +16,17 @@
       <tr>
         <td><%= user.name %></td>
         <td><%= user.email %></td>
-        <td><%= user.role %></td>
+        <td>
+            <form method="POST" action="/admin/users/<%= user.id %>/role">
+                <select name="role">
+                    <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
+                    <option value="employee" <%= user.role === 'employee' ? 'selected' : '' %>>Employee</option>
+                    <option value="owner" <%= user.role === 'owner' ? 'selected' : '' %>>Owner</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </td>
+
         <td><%= new Date(user.created_at).toLocaleDateString() %></td>
       </tr>
     <% }) %>
