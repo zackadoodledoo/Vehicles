@@ -1,15 +1,29 @@
 import pool from '../db/index.js';
+import { splitTitleToParts } from '../lib/helpers.js';
 
-function splitTitleToParts(title = '') {
-  const t = (title || '').toString().trim();
-  const withoutYear = t.replace(/^\s*\d{4}\s*/, '');
-  // naive split: first word after year is make, rest is model
-  const parts = withoutYear.split(/\s+/);
-  return {
-    make: parts.length > 1 ? parts[0] : '',
-    model: parts.length > 1 ? parts.slice(1).join(' ') : withoutYear || t
-  };
+
+function resolveVehicleImage(vehicle) {
+  if (
+    vehicle.image_url &&
+    typeof vehicle.image_url === 'string' &&
+    vehicle.image_url.trim() &&
+    vehicle.image_url !== 'null' &&
+    vehicle.image_url !== '[null]'
+  ) {
+    return vehicle.image_url.trim();
+  }
+
+  if (vehicle.make && vehicle.model) {
+    const slug = `${vehicle.make}-${vehicle.model}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-');
+
+    return `/images/vehicles/makes/${slug}.jpg`;
+  }
+
+  return '/images/placeholder-vehicle.jpg';
 }
+
 
 export async function renderHome(req, res, next) {
   try {
@@ -38,7 +52,11 @@ export async function renderHome(req, res, next) {
         model: parts.model,
         year: v.year,
         price: v.price,
-        image_url: isTruckView ? '/images/placeholder-truck.jpg' : '/images/placeholder-vehicle.jpg'
+        image_url: resolveVehicleImage({
+        make: parts.make,
+        model: parts.model,
+        image_url: null
+        })
       };
     });
 
