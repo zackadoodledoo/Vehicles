@@ -1,0 +1,47 @@
+<%- include("../partials/header") %>
+
+<h1>Add New Vehicle</h1>
+
+<form method="POST" action="/admin/vehicles">
+
+  <label>
+    Make & Model
+    <input name="title" required>
+  </label>
+
+  <label>
+    Category
+    <select name="category_id" required>
+      <option value="">Select a category</option>
+      <% categories.forEach(category => { %>
+        <option value="<%= category.id %>">
+          <%= category.name %>
+        </option>
+      <% }) %>
+    </select>
+  </label>
+
+  <label>
+    Year
+    <input type="number" name="year" required>
+  </label>
+  <br>
+
+  <label>
+    Mileage
+    <input type="number" name="mileage" required>
+  </label>
+
+  <label>
+    Price
+    <input type="number" name="price" required>
+  </label>
+
+  <button type="submit">Create Vehicle</button>
+</form>
+
+<p>
+  <a href="/admin/vehicles">← Back to Vehicle Management</a>
+</p>
+
+<%- include("../partials/footer") %>

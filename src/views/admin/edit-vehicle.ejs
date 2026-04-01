@@ -1,0 +1,33 @@
+<%- include("../partials/header") %>
+
+<h1>Edit Vehicle</h1>
+
+<form method="POST" action="/admin/vehicles/<%= vehicle.id %>">
+  <label>
+    Title
+    <input name="title" value="<%= vehicle.title %>" required>
+  </label>
+
+  <label>
+    Year
+    <input type="number" name="year" value="<%= vehicle.year %>">
+  </label>
+
+  <label>
+    Mileage
+    <input type="number" name="mileage" value="<%= vehicle.mileage %>">
+  </label>
+
+  <label>
+    Price
+    <input type="number" name="price" value="<%= vehicle.price %>">
+  </label>
+
+  <button type="submit">Save Changes</button>
+</form>
+
+<p>
+  <a href="/admin/vehicles">← Back to Vehicle Management</a>
+</p>
+
+<%- include("../partials/footer") %>

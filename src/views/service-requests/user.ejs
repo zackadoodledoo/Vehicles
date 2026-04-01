@@ -2,14 +2,18 @@
 
 <h1>My Service Requests</h1>
 
-<ul>
-  <% requests.forEach(req => { %>
-    <li>
-      <strong><%= req.title || "Vehicle Removed" %></strong><br />
-      Status: <%= req.status %><br />
-      Message: <%= req.message %>
-    </li>
-  <% }) %>
-</ul>
+<% if (requests.length === 0) { %>
+  <p>You have no service requests yet.</p>
+<% } else { %>
+  <ul>
+    <% requests.forEach(req => { %>
+      <li>
+        <strong><%= req.title || "Vehicle Removed" %></strong><br />
+        Status: <%= req.status %><br />
+        Message: <%= req.message %>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
 
 <%- include("../partials/footer") %>

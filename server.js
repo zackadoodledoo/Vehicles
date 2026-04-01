@@ -132,12 +132,13 @@ app.use(express.static(path.join(__dirname, "src", "public")));
 app.use("/", publicRoutes);
 app.use(authRoutes);
 app.use(dashboardRoutes);
-app.use(adminRoutes);
+//app.use(adminRoutes);
 app.use(vehicleRoutes);
 app.use(serviceRequestRoutes);
 app.use(reviewRoutes);
 app.use(contactRoutes);
 app.use(aboutRoutes);
+app.use("/admin", adminRoutes); // Admin routes mounted at /admin for better URL structure
 
 
 

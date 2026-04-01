@@ -26,6 +26,11 @@
                 <button type="submit">Update</button>
             </form>
         </td>
+        <td>
+            <form method="POST" action="/admin/users/<%= user.id %>/reset-password">
+                <button type="submit">Reset Password</button>
+            </form>
+        </td>
 
         <td><%= new Date(user.created_at).toLocaleDateString() %></td>
       </tr>

@@ -22,3 +22,84 @@
   margin: 20px auto;
   display: block;
 }
+
+
+/* ============================
+   Admin Vehicle Management
+============================ */
+
+/* Page spacing */
+h1 {
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1.25rem;
+}
+
+/* Admin action link */
+.admin-actions {
+  margin: 1.5rem 0;
+}
+
+.admin-actions a {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  background-color: #2c3e50;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.admin-actions a:hover {
+  background-color: #503af5;
+}
+
+/* Table layout */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.75rem;
+}
+
+thead th {
+  text-align: left;
+  padding: 0.75rem;
+  background-color: #f4f6f8;
+}
+
+tbody tr {
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+}
+
+tbody td {
+  padding: 0.75rem;
+  vertical-align: middle;
+}
+
+/* Action buttons */
+.admin-actions-cell {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.admin-actions-cell a {
+  padding: 0.35rem 0.6rem;
+  background-color: #7165f2;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.admin-actions-cell button {
+  padding: 0.35rem 0.6rem;
+  background-color: #6a3ce7;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

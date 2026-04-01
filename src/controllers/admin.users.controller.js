@@ -1,4 +1,5 @@
 import pool from "../db/index.js";
+import bcrypt from "bcrypt";
 
 export async function listUsers(req, res, next) {
   try {
@@ -38,3 +39,19 @@ export async function updateUserRole(req, res, next) {
   }
 }
 
+export async function resetUserPassword(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const hashedPassword = await bcrypt.hash("P@$$w0rd!", 10);
+
+    await pool.query(
+      "UPDATE users SET password_hash = $1 WHERE id = $2",
+      [hashedPassword, id]
+    );
+
+    res.redirect("/admin/users");
+  } catch (err) {
+    next(err);
+  }
+}
