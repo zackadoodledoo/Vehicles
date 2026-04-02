@@ -17,7 +17,7 @@
     <div class="category-list">
       <% if (categories && categories.length) { %>
         <% categories.forEach(cat => { %>
-          <a class="category-tile" href="/vehicles?category=<%= encodeURIComponent(cat.slug) %>">
+              <a class="category-tile" href="/vehicles?category=<%= cat.id %>">
             <span><%= cat.name %></span>
           </a>
         <% }) %>
