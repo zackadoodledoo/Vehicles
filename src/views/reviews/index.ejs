@@ -1,0 +1,20 @@
+<%- include('../partials/header', { title: 'Customer Reviews' }) %>
+
+<section class="reviews-page">
+  <h1>Customer Reviews</h1>
+
+  <% if (reviews.length) { %>
+    <% reviews.forEach(r => { %>
+      <article class="review-card">
+        <h3><%= r.vehicle_title || 'Vehicle' %></h3>
+        <p><strong>Rating:</strong> <%= r.rating %>/5</p>
+        <p><%= r.comment %></p>
+        <small><%= new Date(r.created_at).toLocaleDateString() %></small>
+      </article>
+    <% }) %>
+  <% } else { %>
+    <p>No reviews yet.</p>
+  <% } %>
+</section>
+
+<%- include('../partials/footer') %>
