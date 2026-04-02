@@ -1,6 +1,12 @@
 .env
 node_modules/
 
+# DB migration locally to Render, we need to ignore 
+# the .env.migrate file which contains the database credentials for the migration process. 
+# This file should not be committed to version control for security reasons.
+.env.migrate
+
+
 # Logs
 logs
 *.log

@@ -12,7 +12,12 @@ The site is designed to demonstrate backend development concepts including authe
 
 ## Database Schema
 
-[DB schema here]
+![Database ERD](docs/erd.png)
+
+This diagram shows the normalized database structure, including relationships
+between users, roles, vehicles, reviews, service requests, and related entities.
+
+
 
 ---
 
