@@ -183,8 +183,8 @@ export async function createVehicle(req, res, next) {
     }
 
     const sql = `
-      INSERT INTO vehicles (title, year, make, model, price, mileage, image_url, category_id, description, created_at)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9, NOW())
+      INSERT INTO vehicles (title, year, make, model, price, mileage, image_url, category_id, description)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
       RETURNING id
     `;
     const params = [title, year, make || null, model || null, price || null, mileage || null, image_url || null, category_id || null, description || null];
