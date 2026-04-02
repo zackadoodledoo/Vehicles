@@ -1,23 +1,31 @@
-import pool from "../db/index.js";
 import bcrypt from "bcrypt";
+import {
+  getAllUsers,
+  updateUserRoleById,
+  resetUserPasswordById
+} from "../models/user.model.js";
 
+/**
+ * GET /admin/users
+ * Render user management dashboard
+ */
 export async function listUsers(req, res, next) {
   try {
-    const result = await pool.query(`
-      SELECT id, name, email, role, created_at
-      FROM users
-      ORDER BY created_at DESC
-    `);
+    const users = await getAllUsers();
 
     res.render("admin/users", {
       title: "User Management",
-      users: result.rows
+      users
     });
   } catch (err) {
     next(err);
   }
 }
 
+/**
+ * POST /admin/users/:id/role
+ * Update a user's role
+ */
 export async function updateUserRole(req, res, next) {
   try {
     const { id } = req.params;
@@ -28,28 +36,23 @@ export async function updateUserRole(req, res, next) {
       return res.status(400).send("Invalid role");
     }
 
-    await pool.query(
-      "UPDATE users SET role = $1 WHERE id = $2",
-      [role, id]
-    );
-
+    await updateUserRoleById(id, role);
     res.redirect("/admin/users");
   } catch (err) {
     next(err);
   }
 }
 
+/**
+ * POST /admin/users/:id/reset-password
+ * Reset a user's password
+ */
 export async function resetUserPassword(req, res, next) {
   try {
     const { id } = req.params;
-
     const hashedPassword = await bcrypt.hash("P@$$w0rd!", 10);
 
-    await pool.query(
-      "UPDATE users SET password_hash = $1 WHERE id = $2",
-      [hashedPassword, id]
-    );
-
+    await resetUserPasswordById(id, hashedPassword);
     res.redirect("/admin/users");
   } catch (err) {
     next(err);

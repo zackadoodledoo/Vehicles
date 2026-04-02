@@ -1,13 +1,11 @@
-import pool from '../db/index.js';
+import { getAllCategories } from "../models/category.model.js";
 
 export async function showAboutPage(req, res, next) {
   try {
-    const result = await pool.query(
-      'SELECT name, slug FROM categories ORDER BY name'
-    );
+    const categories = await getAllCategories();
 
-    res.render('about', {
-      categories: result.rows
+    res.render("about", {
+      categories
     });
   } catch (err) {
     next(err);

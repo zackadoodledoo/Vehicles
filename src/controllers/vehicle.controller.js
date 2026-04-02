@@ -3,8 +3,7 @@
 // Uses ES module exports to match a modern Node setup.
 // Assumes you have a `db` or `pool` module that exposes query execution.
 // Adjust the DB calls to match your project's data access layer.
-
-import pool from '../db/index.js'; // adjust path if your DB client is elsewhere
+import { getVehicles, getVehicleById, createVehicle as createVehicleModel } from '../models/vehicle.model.js';
 import { splitTitleToParts } from '../lib/helpers.js'; // optional helper used elsewhere; adjust or inline if missing
 
 // Helper: choose placeholder based on category slug
@@ -54,20 +53,15 @@ export async function showVehicleListings(req, res, next) {
     const limit = 24;
     const offset = (page - 1) * limit;
 
-    // Example SQL - adjust to your schema
-    const sql = `
-      SELECT v.id, v.title, v.price, v.mileage, v.image_url, c.slug AS category_slug, v.year
-      FROM vehicles v
-      LEFT JOIN categories c ON v.category_id = c.id
-      WHERE ($1::text IS NULL OR c.slug = $1::text)
-      ORDER BY v.id DESC
-      LIMIT $2 OFFSET $3
-    `;
-    const params = [categorySlug, limit, offset];
-    const result = await pool.query(sql, params);
+    const vehiclesRaw = await getVehicles({
+      categorySlug,
+      limit,
+      offset
+});
+
 
     // Normalize rows and image_url
-    const vehicles = (result.rows || []).map((v) => {
+    const vehicles = (vehiclesRaw || []).map((v) => {
       const parts = splitTitleToParts ? splitTitleToParts(v.title || '') : { make: '', model: '' };
       const rowSlug = (v.category_slug || categorySlug || '').toString().toLowerCase();
 
@@ -116,17 +110,7 @@ export async function showVehicleDetails(req, res, next) {
     const id = req.params.id;
     if (!id) return res.status(400).send('Vehicle id required');
 
-    // Example SQL - adjust to your schema
-    const sql = `
-      SELECT v.*, c.slug AS category_slug
-      FROM vehicles v
-      LEFT JOIN categories c ON v.category_id = c.id
-      WHERE v.id = $1
-      LIMIT 1
-    `;
-    const result = await pool.query(sql, [id]);
-    const vehicle = result.rows && result.rows[0];
-
+    const vehicle = await getVehicleById(id);
     const parts = splitTitleToParts
       ? splitTitleToParts(vehicle.title || '')
       : { make: '', model: '' };
@@ -175,21 +159,36 @@ export function newVehicleForm(req, res) {
  */
 export async function createVehicle(req, res, next) {
   try {
-    const { title, year, make, model, price, mileage, image_url, category_id, description } = req.body;
+    const {
+      title,
+      year,
+      make,
+      model,
+      price,
+      mileage,
+      image_url,
+      category_id,
+      description
+    } = req.body;
 
-    // Basic validation (expand as needed)
     if (!title || !year) {
-      return res.status(400).render('vehicles/create', { vehicle: req.body, error: 'Title and year are required.' });
+      return res.status(400).render('vehicles/create', {
+        vehicle: req.body,
+        error: 'Title and year are required.'
+      });
     }
 
-    const sql = `
-      INSERT INTO vehicles (title, year, make, model, price, mileage, image_url, category_id, description)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-      RETURNING id
-    `;
-    const params = [title, year, make || null, model || null, price || null, mileage || null, image_url || null, category_id || null, description || null];
-    const result = await pool.query(sql, params);
-    const newId = result.rows && result.rows[0] && result.rows[0].id;
+    const newId = await createVehicleModel({
+      title,
+      year,
+      make,
+      model,
+      price,
+      mileage,
+      image_url,
+      category_id,
+      description
+    });
 
     return res.redirect(`/vehicles/${newId}`);
   } catch (err) {

@@ -1,5 +1,4 @@
-import pool from "../db/index.js";
-import { createReview, deleteReview,} from "../models/review.model.js";
+import {createReview, deleteReview, getRecentReviews} from "../models/review.model.js";
 
 /**
  * GET /reviews
@@ -7,23 +6,10 @@ import { createReview, deleteReview,} from "../models/review.model.js";
  */
 export async function showReviews(req, res, next) {
   try {
-    const sql = `
-      SELECT
-        r.id,
-        r.rating,
-        r.comment,
-        r.created_at,
-        v.title AS vehicle_title
-      FROM reviews r
-      LEFT JOIN vehicles v ON r.vehicle_id = v.id
-      ORDER BY r.id DESC
-      LIMIT 25
-    `;
-
-    const result = await pool.query(sql);
+    const reviews = await getRecentReviews(25);
 
     res.render("reviews/index", {
-      reviews: result.rows
+      reviews
     });
   } catch (err) {
     console.error("showReviews error:", err);
