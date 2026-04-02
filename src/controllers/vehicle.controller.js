@@ -60,7 +60,7 @@ export async function showVehicleListings(req, res, next) {
       FROM vehicles v
       LEFT JOIN categories c ON v.category_id = c.id
       WHERE ($1::text IS NULL OR c.slug = $1::text)
-      ORDER BY v.created_at DESC
+      ORDER BY v.id DESC
       LIMIT $2 OFFSET $3
     `;
     const params = [categorySlug, limit, offset];
