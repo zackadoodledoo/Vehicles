@@ -28,7 +28,7 @@ function resolveVehicleImage(vehicle) {
 export async function renderHome(req, res, next) {
   try {
     const categoriesResult = await pool.query(
-      `SELECT id, name FROM categories ORDER BY name`
+      `SELECT id, name, slug FROM categories ORDER BY name`
     );
     const categories = categoriesResult.rows || [];
 
