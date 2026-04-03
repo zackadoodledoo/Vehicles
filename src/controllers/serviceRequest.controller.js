@@ -66,7 +66,7 @@ export async function updateRequestStatus(req, res, next) {
     }
 
     await updateServiceStatus(req.params.id, status);
-    return res.redirect('/admin/service-requests');
+    return res.redirect(303, '/admin/service-requests');
   } catch (err) {
     next(err);
   }
