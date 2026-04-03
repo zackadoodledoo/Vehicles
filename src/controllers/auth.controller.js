@@ -4,6 +4,12 @@ import {
   findUserByEmail
 } from "../models/auth.model.js";
 
+const ROLE_MAP = {
+  1: "owner",
+  2: "employee",
+  3: "user"
+};
+
 // GET /register
 export function showRegister(req, res) {
   res.render("auth/register", { error: null });
@@ -26,7 +32,7 @@ export async function register(req, res, next) {
     req.session.user = {
       id: user.id,
       email: user.email,
-      role: user.role,
+      role: ROLE_MAP[user.role],
       name: user.name
     };
 
@@ -74,7 +80,7 @@ export async function login(req, res, next) {
     req.session.user = {
       id: user.id,
       email: user.email,
-      role: user.role,
+      role: ROLE_MAP[user.role],
       name: user.name
     };
 
