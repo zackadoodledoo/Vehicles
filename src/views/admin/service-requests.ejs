@@ -8,10 +8,9 @@
 
 <% (requests || []).forEach(r => { %>
   <div class="card">
-    <p><strong>Requester:</strong> <%= r.requester_name || '—' %></p>
+    <p><strong>Requester:</strong> <%= r.user_email || '—' %></p>
     <p><strong>Vehicle:</strong> <%= r.vehicle_title || '—' %></p>
-    <p><strong>Service:</strong> <%= r.service_type %></p>
-    <% if (r.description) { %><p><%= r.description %></p><% } %>
+    <p><strong>Message:</strong> <%= r.message || '—' %></p>
 
     <form method="POST" action="/admin/service-requests/<%= r.id %>/status">
       <label>Status</label>
