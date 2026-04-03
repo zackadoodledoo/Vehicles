@@ -5,6 +5,13 @@ import {
   resetUserPasswordById
 } from "../models/user.model.js";
 
+const ROLE_TO_ID = {
+  owner: 1,
+  employee: 2,
+  user: 3
+};
+
+
 /**
  * GET /admin/users
  * Render user management dashboard
@@ -31,17 +38,25 @@ export async function updateUserRole(req, res, next) {
     const { id } = req.params;
     const { role } = req.body;
 
-    const allowedRoles = ["user", "employee", "owner"];
-    if (!allowedRoles.includes(role)) {
+    const ROLE_TO_ID = {
+      owner: 1,
+      employee: 2,
+      user: 3
+    };
+
+    const roleId = ROLE_TO_ID[role];
+
+    if (!roleId) {
       return res.status(400).send("Invalid role");
     }
 
-    await updateUserRoleById(id, role);
+    await updateUserRoleById(id, roleId);
     res.redirect("/admin/users");
   } catch (err) {
     next(err);
   }
 }
+
 
 /**
  * POST /admin/users/:id/reset-password
