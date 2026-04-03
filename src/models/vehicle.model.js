@@ -8,8 +8,6 @@ export async function getVehicles({ categorySlug = null, limit = 24, offset = 0 
     SELECT
       v.id,
       v.title,
-      v.make,
-      v.model,
       v.price,
       v.year,
       v.mileage,
@@ -34,8 +32,6 @@ export async function getVehicleById(id) {
     SELECT
       v.id,
       v.title,
-      v.make,
-      v.model,
       v.price,
       v.year,
       v.mileage,
