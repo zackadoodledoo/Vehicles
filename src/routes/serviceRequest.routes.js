@@ -1,33 +1,22 @@
-import express from "express";
+import { Router } from 'express';
+import { requireLogin, requireRole } from '../middleware/auth.js';
 import {
-  showServiceRequestForm,
+  showNewServiceRequestForm,
   submitServiceRequest,
   showUserRequests,
-  showAllRequests,
-  updateRequestStatus,
-} from "../controllers/serviceRequest.controller.js";
-import { requireLogin, requireRole } from "../middleware/auth.js";
-
-const router = express.Router();
-
-// User routes
-router.get("/service-requests/new", requireLogin, showServiceRequestForm);
-router.post("/service-requests", requireLogin, submitServiceRequest);
-router.get("/service-requests", requireLogin, showUserRequests);
-
-// Employee / Admin routes
-router.get(
-  "/admin/service-requests",
-  requireLogin,
-  requireRole("employee"),
-  showAllRequests
-);
-
-router.post(
-  "/admin/service-requests/:id",
-  requireLogin,
-  requireRole("employee"),
+  showAdminRequests,
   updateRequestStatus
-);
+} from '../controllers/serviceRequest.controller.js';
+
+const router = Router();
+
+// User
+router.get('/service-requests/new', requireLogin, showNewServiceRequestForm);
+router.post('/service-requests', requireLogin, submitServiceRequest);
+router.get('/account/service-requests', requireLogin, showUserRequests);
+
+// Employee/Owner
+router.get('/admin/service-requests', requireLogin, requireRole('employee'), showAdminRequests);
+router.post('/admin/service-requests/:id/status', requireLogin, requireRole('employee'), updateRequestStatus);
 
 export default router;

@@ -1,0 +1,28 @@
+<%- include('../partials/header', { title: 'Service Requests' }) %>
+
+<h2>Service Requests</h2>
+
+<% if (!requests || requests.length === 0) { %>
+  <p>No service requests found.</p>
+<% } %>
+
+<% (requests || []).forEach(r => { %>
+  <div class="card">
+    <p><strong>Requester:</strong> <%= r.requester_name || '—' %></p>
+    <p><strong>Vehicle:</strong> <%= r.vehicle_title || '—' %></p>
+    <p><strong>Service:</strong> <%= r.service_type %></p>
+    <% if (r.description) { %><p><%= r.description %></p><% } %>
+
+    <form method="POST" action="/admin/service-requests/<%= r.id %>/status">
+      <label>Status</label>
+      <select name="status">
+        <option value="submitted" <%= r.status === 'submitted' ? 'selected' : '' %>>Submitted</option>
+        <option value="in_progress" <%= r.status === 'in_progress' ? 'selected' : '' %>>In Progress</option>
+        <option value="completed" <%= r.status === 'completed' ? 'selected' : '' %>>Completed</option>
+      </select>
+      <button class="btn">Update</button>
+    </form>
+  </div>
+<% }) %>
+
+<%- include('../partials/footer') %>

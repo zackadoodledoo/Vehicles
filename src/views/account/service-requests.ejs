@@ -1,0 +1,20 @@
+<%- include('../partials/header', { title: 'Your Service Requests' }) %>
+
+<h2>Your Service Requests</h2>
+
+<p><a class="btn" href="/service-requests/new">Submit a Service Request</a></p>
+
+<% if (!requests || requests.length === 0) { %>
+  <p>No service requests yet.</p>
+<% } %>
+
+<% (requests || []).forEach(r => { %>
+  <div class="card">
+    <p><strong>Vehicle:</strong> <%= r.vehicle_title || '—' %></p>
+    <p><strong>Service:</strong> <%= r.service_type %></p>
+    <p><strong>Status:</strong> <%= r.status %></p>
+    <% if (r.description) { %><p><%= r.description %></p><% } %>
+  </div>
+<% }) %>
+
+<%- include('../partials/footer') %>

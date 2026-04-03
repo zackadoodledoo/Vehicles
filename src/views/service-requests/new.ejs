@@ -1,0 +1,22 @@
+<%- include('../partials/header', { title: 'New Service Request' }) %>
+
+<h2>New Service Request</h2>
+
+<% if (typeof error !== 'undefined') { %>
+  <p class="error"><%= error %></p>
+<% } %>
+
+<form method="POST" action="/service-requests">
+  <label>Vehicle ID (optional)</label>
+  <input name="vehicle_id" type="number" />
+
+  <label>Service type</label>
+  <input name="service_type" required />
+
+  <label>Description</label>
+  <textarea name="description"></textarea>
+
+  <button class="btn">Submit</button>
+</form>
+
+<%- include('../partials/footer') %>
