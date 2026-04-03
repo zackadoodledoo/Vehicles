@@ -5,7 +5,7 @@ import { listUsers, updateUserRole, resetUserPassword } from "../controllers/adm
 import { getVehicles, getVehicleById } from "../models/vehicle.model.js";
 import { createVehicle, updateVehicle, deleteVehicle, } from "../models/vehicle.model.js";
 import { getAllCategories } from "../models/category.model.js";
-import { showReviewDashboard, deleteReview } from "../controllers/admin.reviews.controller.js";
+import { showReviewDashboard, deleteReview } from "../controllers/admin.controller.js";
 
 const router = Router();
 
