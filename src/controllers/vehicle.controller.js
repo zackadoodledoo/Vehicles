@@ -20,8 +20,9 @@ function resolveVehicleImage(vehicle) {
     vehicle.image_url &&
     typeof vehicle.image_url === "string" &&
     vehicle.image_url.trim() &&
+    vehicle.image_url !== "[null]" &&
     !vehicle.image_url.endsWith(".svg")
-  ) {
+  ) {  
     return vehicle.image_url.trim();
   }
 
