@@ -5,6 +5,7 @@ import { listUsers, updateUserRole, resetUserPassword, deleteUser } from "../con
 import { getVehicles, getVehicleById } from "../models/vehicle.model.js";
 import { createVehicle, updateVehicle, deleteVehicle, } from "../models/vehicle.model.js";
 import { getAllCategories } from "../models/category.model.js";
+import { showAdminRequests } from "../controllers/serviceRequest.controller.js";
 
 const router = Router();
 
@@ -88,6 +89,8 @@ router.post("/vehicles/:id/delete", requireRole("owner"), async (req, res, next)
   }
 });
 
+// Service request management
+router.get("/service-requests", requireLogin, requireRole(["employee", "owner"]), showAdminRequests);
 
 
 
