@@ -111,6 +111,14 @@ router.post(
   updateRequestStatus
 );
 
+// debug route - temporary, remove after testing
+router.get("/debug-session", (req, res) => {
+  res.json({
+    path: req.path,
+    sessionUser: req.session?.user || null,
+    cookieHeader: req.headers.cookie || null
+  });
+});
 
 
 
