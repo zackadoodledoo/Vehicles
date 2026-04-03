@@ -3,7 +3,7 @@ import pool from "../db/index.js";
 /**
  * Get paginated vehicles (optionally filtered by category)
  */
-export async function getVehicles({ categorySlug = null, limit = 24, offset = 0 }) {
+export async function getVehicles({ categorySlug = null, limit = 24, offset = 0 } = {}) {
   const sql = `
     SELECT
       v.id,
