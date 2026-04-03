@@ -1,17 +1,13 @@
 import pool from "../db/index.js";
 
 /**
- * Get all categories for dashboards and navigation
+ * Create a new contact message
  */
-export async function getAllCategories() {
+export async function createContactMessage(name, email, message) {
   const sql = `
-    SELECT
-      name,
-      slug
-    FROM categories
-    ORDER BY name
+    INSERT INTO contact_messages (name, email, message)
+    VALUES ($1, $2, $3)
   `;
 
-  const result = await pool.query(sql);
-  return result.rows;
+  await pool.query(sql, [name, email, message]);
 }

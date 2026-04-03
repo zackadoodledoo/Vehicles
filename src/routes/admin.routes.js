@@ -2,7 +2,7 @@ import { Router } from "express";
 import { requireRole } from "../middleware/auth.js";
 import { showAdminPanel } from "../controllers/admin.controller.js";
 import { listUsers, updateUserRole, resetUserPassword } from "../controllers/admin.users.controller.js";
-import { getAllVehicles, getVehicleById } from "../models/vehicle.model.js";
+import { getVehicles, getVehicleById } from "../models/vehicle.model.js";
 import { createVehicle, updateVehicle, deleteVehicle, } from "../models/vehicle.model.js";
 import { getAllCategories } from "../models/category.model.js";
 
@@ -20,7 +20,7 @@ router.post("/users/:id/reset-password", requireRole("owner"), resetUserPassword
 // Vehicle management
 router.get("/vehicles", requireRole("owner"), async (req, res, next) => {
   try {
-    const vehicles = await getAllVehicles();
+    const vehicles = await getVehicles();
     res.render("admin/vehicles", { vehicles });
   } catch (err) {
     next(err);
