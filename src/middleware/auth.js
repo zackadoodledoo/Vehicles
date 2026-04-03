@@ -11,33 +11,34 @@ export function requireLogin(req, res, next) {
 }
 
 // Require user to have one or more specific roles
-export function requireRole(roles) {
+export function requireRole(allowed) {
   return (req, res, next) => {
-    if (!req.session.user) {
-      return res.redirect('/login');
+    if (!req.session || !req.session.user) {
+      return res.status(403).render("errors/403");
     }
 
-    let userRole = req.session.user.role;
+    let role = req.session.user.role;
 
-    // Normalize numeric roles to strings
-    const ROLE_MAP = {
-      1: 'owner',
-      2: 'employee',
-      3: 'user'
-    };
-
-    if (typeof userRole === 'number') {
-      userRole = ROLE_MAP[userRole];
+    // Normalize role to lowercase string
+    if (typeof role === "number") {
+      role = String(role);
     }
 
-    const allowedRoles = Array.isArray(roles) ? roles : [roles];
+    if (typeof role === "string") {
+      role = role.toLowerCase().trim();
+    }
 
-    if (!allowedRoles.includes(userRole)) {
-      return res.status(403).render('errors/403', {
-        title: 'Access Denied'
-      });
+    const allowedRoles = Array.isArray(allowed)
+      ? allowed.map(r => r.toLowerCase())
+      : [allowed.toLowerCase()];
+
+    console.log("ROLE CHECK:", role, "ALLOWED:", allowedRoles);
+
+    if (!allowedRoles.includes(role)) {
+      return res.status(403).render("errors/403");
     }
 
     next();
   };
 }
+
