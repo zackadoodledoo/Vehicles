@@ -3,7 +3,7 @@
 <section class="reviews-page">
   <h1>Customer Reviews</h1>
 
-  <% if (reviews.length) { %>
+  <% if (reviews && reviews.length) { %>
     <% reviews.forEach(r => { %>
       <article class="review-card">
         <h3><%= r.vehicle_title || 'Vehicle' %></h3>
