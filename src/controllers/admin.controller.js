@@ -1,5 +1,9 @@
 import { getAllReviews, deleteReviewById } from '../models/review.model.js';
 
+export function showAdminPanel(req, res) {
+  res.render('admin/index');
+}
+
 export async function showReviewDashboard(req, res, next) {
   try {
     const reviews = await getAllReviews();

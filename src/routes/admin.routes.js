@@ -1,18 +1,19 @@
 import { Router } from "express";
 import { requireRole } from "../middleware/auth.js";
-import { showAdminPanel } from "../controllers/admin.controller.js";
+import { showAdminPanel, showReviewDashboard, deleteReview } from "../controllers/admin.controller.js";
 import { listUsers, updateUserRole, resetUserPassword } from "../controllers/admin.users.controller.js";
 import { getVehicles, getVehicleById } from "../models/vehicle.model.js";
 import { createVehicle, updateVehicle, deleteVehicle, } from "../models/vehicle.model.js";
 import { getAllCategories } from "../models/category.model.js";
-import { showReviewDashboard, deleteReview } from "../controllers/admin.controller.js";
 
 const router = Router();
 
 // Admin dashboard
 router.get("/", requireRole("owner"), showAdminPanel);
 
-router.get("/admin/reviews", requireLogin, requireRole('employee'), showReviewDashboard);
+router.get("/reviews", requireLogin, requireRole("employee"), showReviewDashboard);
+router.post("/reviews/:id/delete", requireLogin, requireRole("employee"), deleteReview);
+
 
 // User management
 router.get("/users", requireRole("owner"), listUsers);
@@ -83,7 +84,6 @@ router.post("/vehicles/:id/delete", requireRole("owner"), async (req, res, next)
 });
 
 
-router.post("/admin/reviews/:id/delete", requireLogin, requireRole('employee'), deleteReview);
 
 
 
