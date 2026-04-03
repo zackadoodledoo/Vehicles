@@ -28,11 +28,12 @@
         <a href="/dashboard">Dashboard</a>
 
         <% if (user.role === 'user') { %>
-          <a href="/service-requests">My Service Requests</a>
+          <a href="/account/service-requests">My Service Requests</a>
+          <a href="/service-requests/new">Submit Service Request</a>
         <% } %>
 
         <% if (user.role === 'employee') { %>
-          <a href="/service-requests">Service Requests</a>
+          <a href="/admin/service-requests">Service Requests</a>
         <% } %>
 
         <% if (user.role === 'owner') { %>
