@@ -1,4 +1,4 @@
-import {createReview, deleteReview, getRecentReviews} from "../models/review.model.js";
+import {createReview,getRecentReviews,deleteReviewById} from "../models/review.model.js";
 
 /**
  * GET /reviews
@@ -43,7 +43,7 @@ export async function submitReview(req, res, next) {
  */
 export async function removeReview(req, res, next) {
   try {
-    await deleteReview(req.params.reviewId);
+    await deleteReviewById(req.params.reviewId);
     res.redirect("back");
   } catch (err) {
     next(err);
