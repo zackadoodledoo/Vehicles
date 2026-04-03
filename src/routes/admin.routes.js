@@ -1,3 +1,4 @@
+console.log("ADMIN ROUTES FILE LOADED");
 import { Router } from "express";
 import { requireLogin, requireRole } from "../middleware/auth.js";
 import { showAdminPanel, showReviewDashboard, deleteReview } from "../controllers/admin.controller.js";

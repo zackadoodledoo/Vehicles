@@ -143,32 +143,6 @@ app.use("/admin", adminRoutes); // Admin routes mounted at /admin for better URL
 
 
 
-
-
-const mountedRouters = [
-  { name: 'publicRoutes', mount: '/', router: publicRoutes },
-  { name: 'authRoutes', mount: '/', router: authRoutes },
-  { name: 'dashboardRoutes', mount: '/', router: dashboardRoutes },
-  { name: 'adminRoutes', mount: '/', router: adminRoutes },
-  { name: 'vehicleRoutes', mount: '/', router: vehicleRoutes },
-  { name: 'serviceRequestRoutes', mount: '/', router: serviceRequestRoutes },
-  { name: 'reviewRoutes', mount: '/', router: reviewRoutes }
-];
-
-
-
-const routersToCheck = {
-  publicRoutes,
-  authRoutes,
-  dashboardRoutes,
-  adminRoutes,
-  vehicleRoutes,
-  serviceRequestRoutes,
-  reviewRoutes
-};
-
-
-
 /* -----------------------------
    404 catch-all handler
 ------------------------------ */
