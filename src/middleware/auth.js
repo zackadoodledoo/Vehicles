@@ -32,7 +32,7 @@ export function requireRole(allowed) {
       ? allowed.map(r => r.toLowerCase())
       : [allowed.toLowerCase()];
 
-    console.log("ROLE CHECK:", role, "ALLOWED:", allowedRoles);
+    console.log("ROLE CHECK:", role, "ALLOWED:", allowedRoles, "PATH:", req.path, "REFERER:", req.get('Referer') || 'none');
 
     if (!allowedRoles.includes(role)) {
       return res.status(403).render("errors/403");
