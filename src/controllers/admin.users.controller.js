@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 import {
   getAllUsers,
   updateUserRoleById,
-  resetUserPasswordById
+  resetUserPasswordById, 
+  deleteUserById
 } from "../models/user.model.js";
 
 const ROLE_TO_ID = {
@@ -68,6 +69,34 @@ export async function resetUserPassword(req, res, next) {
     const hashedPassword = await bcrypt.hash("P@$$w0rd!", 10);
 
     await resetUserPasswordById(id, hashedPassword);
+    res.redirect("/admin/users");
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteUser(req, res, next) {
+  try {
+    const targetUserId = Number(req.params.id);
+    const currentUser = req.session.user;
+
+    // Prevent self‑deletion
+    if (currentUser.id === targetUserId) {
+      return res.status(403).send("You cannot delete your own account.");
+    }
+
+    const targetUser = await getUserById(targetUserId);
+
+    if (!targetUser) {
+      return res.status(404).send("User not found.");
+    }
+
+    // Prevent deleting other owners
+    if (targetUser.role === 1) {
+      return res.status(403).send("You cannot delete another owner.");
+    }
+
+    await deleteUserById(targetUserId);
     res.redirect("/admin/users");
   } catch (err) {
     next(err);

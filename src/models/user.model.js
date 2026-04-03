@@ -44,3 +44,15 @@ export async function resetUserPasswordById(userId, hashedPassword) {
 
   await pool.query(sql, [hashedPassword, userId]);
 }
+
+/**
+ * Delete user by owner 
+ */
+export async function deleteUserById(id) {
+  const sql = `
+    DELETE FROM users
+    WHERE id = $1
+  `;
+  await pool.query(sql, [id]);
+}
+
