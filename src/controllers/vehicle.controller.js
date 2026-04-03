@@ -14,7 +14,6 @@ function placeholderForCategory(slug) {
   return '/images/placeholder-vehicle.jpg';
 }
 
-// Normalize a single image URL (ensures no .svg placeholders leak through)
 function resolveVehicleImage(vehicle) {
   // Explicit vehicle image (from DB)
   if (
@@ -26,11 +25,12 @@ function resolveVehicleImage(vehicle) {
     return vehicle.image_url.trim();
   }
 
-  // Make + model image (static asset)
-  if (vehicle.make && vehicle.model) {
-    const slug = `${vehicle.make}-${vehicle.model}`
+  // Derive image from title
+  if (vehicle.title) {
+    const slug = vehicle.title
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-");
+      .replace(/^\d+\s*/, '')
+      .replace(/[^a-z0-9]+/g, '-');
 
     return `/images/vehicles/makes/${slug}.jpg`;
   }
