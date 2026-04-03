@@ -66,7 +66,7 @@ export async function getLatestVehicles(limit = 12) {
       year,
       price
     FROM vehicles
-    ORDER BY created_at DESC
+    ORDER BY id DESC
     LIMIT $1
   `;
 
