@@ -17,14 +17,24 @@ export function requireRole(roles) {
       return res.redirect('/login');
     }
 
-    const userRole = req.session.user.role;
+    let userRole = req.session.user.role;
 
-    // Normalize roles to an array
+    // Normalize numeric roles to strings
+    const ROLE_MAP = {
+      1: 'owner',
+      2: 'employee',
+      3: 'user'
+    };
+
+    if (typeof userRole === 'number') {
+      userRole = ROLE_MAP[userRole];
+    }
+
     const allowedRoles = Array.isArray(roles) ? roles : [roles];
 
     if (!allowedRoles.includes(userRole)) {
       return res.status(403).render('errors/403', {
-        title: 'Access Denied',
+        title: 'Access Denied'
       });
     }
 
