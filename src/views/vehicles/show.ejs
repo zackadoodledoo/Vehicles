@@ -2,28 +2,70 @@
 
 <article class="vehicle-detail card">
   <div class="image-wrap">
-    <img class="card-img" src="<%= vehicle.image_url %>" alt="<%= vehicle.title %>" loading="lazy" onerror="this.onerror=null;this.src='/images/placeholder-vehicle.jpg'">
-
+    <img
+      class="card-img"
+      src="<%= vehicle.image_url %>"
+      alt="<%= vehicle.title %>"
+      loading="lazy"
+      onerror="this.onerror=null;this.src='/images/placeholder-vehicle.jpg'"
+    >
   </div>
-
 
   <div class="card-body">
     <h2 class="card-title"><%= vehicle && vehicle.title ? vehicle.title : 'Vehicle' %></h2>
+
     <p class="card-meta">
       <span class="price">
-        $<%= (vehicle && typeof vehicle.price !== 'undefined' && vehicle.price !== null) ? Number(vehicle.price).toLocaleString() : '0' %>
+        $<%= vehicle && vehicle.price != null ? Number(vehicle.price).toLocaleString() : '0' %>
       </span>
+
       <% if (vehicle && vehicle.mileage) { %>
         <span class="mileage"><%= Number(vehicle.mileage).toLocaleString() %> mi</span>
       <% } %>
     </p>
 
-    <!-- additional details -->
     <section class="details">
-      <p><strong>Year</strong>: <%= vehicle && vehicle.year ? vehicle.year : '—' %></p>
-      <p><strong>Description</strong>: <%= vehicle && vehicle.description ? vehicle.description : 'No description available.' %></p>
+      <p><strong>Year</strong>: <%= vehicle.year || '—' %></p>
+      <p><strong>Description</strong>: <%= vehicle.description || 'No description available.' %></p>
     </section>
   </div>
 </article>
+
+<!-- ========================= -->
+<!-- Reviews Section -->
+<!-- ========================= -->
+
+<section class="reviews">
+  <h3>Customer Reviews</h3>
+
+  <% if (user) { %>
+    <a href="/vehicles/<%= vehicle.id %>/reviews/new" class="btn">
+      Leave a Review
+    </a>
+  <% } else { %>
+    <p><a href="/login">Log in</a> to leave a review.</p>
+  <% } %>
+
+  <% if (!reviews || reviews.length === 0) { %>
+    <p>No reviews yet.</p>
+  <% } %>
+
+  <% reviews.forEach(review => { %>
+    <div class="review-card">
+      <div class="review-header">
+        <strong><%= review.name || 'Anonymous' %></strong>
+        <span class="rating">Rating: <%= review.rating %>/5</span>
+      </div>
+
+      <p class="review-comment"><%= review.comment %></p>
+
+      <% if (user && (user.role === 'employee' || user.role === 'owner')) { %>
+        <form method="POST" action="/reviews/<%= review.id %>/delete">
+          <button class="btn danger">Delete</button>
+        </form>
+      <% } %>
+    </div>
+  <% }) %>
+</section>
 
 <%- include('../partials/footer') %>

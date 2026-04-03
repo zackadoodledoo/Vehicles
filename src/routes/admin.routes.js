@@ -5,12 +5,14 @@ import { listUsers, updateUserRole, resetUserPassword } from "../controllers/adm
 import { getVehicles, getVehicleById } from "../models/vehicle.model.js";
 import { createVehicle, updateVehicle, deleteVehicle, } from "../models/vehicle.model.js";
 import { getAllCategories } from "../models/category.model.js";
-
+import { showReviewDashboard, deleteReview } from "../controllers/admin.reviews.controller.js";
 
 const router = Router();
 
 // Admin dashboard
 router.get("/", requireRole("owner"), showAdminPanel);
+
+router.get("/admin/reviews", requireLogin, requireRole('employee'), showReviewDashboard);
 
 // User management
 router.get("/users", requireRole("owner"), listUsers);
@@ -79,6 +81,9 @@ router.post("/vehicles/:id/delete", requireRole("owner"), async (req, res, next)
     next(err);
   }
 });
+
+
+router.post("/admin/reviews/:id/delete", requireLogin, requireRole('employee'), deleteReview);
 
 
 
