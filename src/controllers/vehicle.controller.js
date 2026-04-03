@@ -4,7 +4,7 @@
 // Assumes you have a `db` or `pool` module that exposes query execution.
 // Adjust the DB calls to match your project's data access layer.
 import { getVehicles, getVehicleById, createVehicle as createVehicleModel } from '../models/vehicle.model.js';
-import { splitTitleToParts } from '../lib/helpers.js'; // optional helper used elsewhere; adjust or inline if missing
+
 
 // Helper: choose placeholder based on category slug
 function placeholderForCategory(slug) {
@@ -62,7 +62,7 @@ export async function showVehicleListings(req, res, next) {
 
     // Normalize rows and image_url
     const vehicles = (vehiclesRaw || []).map((v) => {
-      const parts = splitTitleToParts ? splitTitleToParts(v.title || '') : { make: '', model: '' };
+      const parts = {make: v.make || '', model: v.model || ''};
       const rowSlug = (v.category_slug || categorySlug || '').toString().toLowerCase();
 
       const image_url = resolveVehicleImage({
