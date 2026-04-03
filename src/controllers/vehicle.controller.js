@@ -114,11 +114,7 @@ export async function showVehicleDetails(req, res, next) {
     if (!id) return res.status(400).send('Vehicle id required');
 
     const vehicle = await getVehicleById(id);
-    const parts = splitTitleToParts
-      ? splitTitleToParts(vehicle.title || '')
-      : { make: '', model: '' };
-
-
+    
     console.log('DEBUG getVehicleById result:', vehicle);
 
     if (!vehicle) {
@@ -131,8 +127,8 @@ export async function showVehicleDetails(req, res, next) {
     // Normalize image_url (choose placeholder based on category)
     const image_url = resolveVehicleImage({
       image_url: vehicle.image_url,
-      make: vehicle.make || parts.make,
-      model: vehicle.model || parts.model,
+      make: null,
+      model: null,
       category_slug: vehicle.category_slug
     });
 
