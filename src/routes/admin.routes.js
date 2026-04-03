@@ -13,9 +13,19 @@ const router = Router();
 // Admin dashboard
 router.get("/", requireRole("owner"), showAdminPanel);
 
-router.get("/reviews", requireLogin, requireRole("employee"), showReviewDashboard);
-router.post("/reviews/:id/delete", requireLogin, requireRole("employee"), deleteReview);
+router.get(
+  "/reviews",
+  requireLogin,
+  requireRole(["employee", "owner"]),
+  showReviewDashboard
+);
 
+router.post(
+  "/reviews/:id/delete",
+  requireLogin,
+  requireRole(["employee", "owner"]),
+  deleteReview
+);
 
 
 
