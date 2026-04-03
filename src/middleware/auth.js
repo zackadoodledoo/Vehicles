@@ -10,14 +10,19 @@ export function requireLogin(req, res, next) {
   next();
 }
 
-// Require user to have a specific role
-export function requireRole(role) {
+// Require user to have one or more specific roles
+export function requireRole(roles) {
   return (req, res, next) => {
     if (!req.session.user) {
       return res.redirect('/login');
     }
 
-    if (req.session.user.role !== role) {
+    const userRole = req.session.user.role;
+
+    // Normalize roles to an array
+    const allowedRoles = Array.isArray(roles) ? roles : [roles];
+
+    if (!allowedRoles.includes(userRole)) {
       return res.status(403).render('errors/403', {
         title: 'Access Denied',
       });
