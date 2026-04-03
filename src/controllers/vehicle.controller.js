@@ -59,6 +59,9 @@ export async function showVehicleListings(req, res, next) {
       offset
 });
 
+console.log("RENDER VEHICLES RAW:", vehiclesRaw);
+
+
 
     // Normalize rows and image_url
     const vehicles = (vehiclesRaw || []).map((v) => {
