@@ -79,6 +79,11 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
+app.use((req, res, next) => {
+   res.locals.user = req.session?.user || null;
+   next();
+});
+
 
 /* -----------------------------
    Session configuration
