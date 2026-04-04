@@ -16,7 +16,7 @@ router.post('/service-requests', requireLogin, submitServiceRequest);
 router.get('/account/service-requests', requireLogin, showUserRequests);
 
 // Employee/Owner
-router.get('/admin/service-requests', requireLogin, requireRole('employee'), showAdminRequests);
-router.post('/admin/service-requests/:id/status', requireLogin, requireRole('employee'), updateRequestStatus);
+router.get('/admin/service-requests', requireLogin, requireRole(["employee","owner"]), showAdminRequests);
+router.post('/admin/service-requests/:id/status', requireLogin, requireRole(["employee","owner"]), updateRequestStatus);
 
 export default router;
