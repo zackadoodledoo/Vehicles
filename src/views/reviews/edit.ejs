@@ -1,0 +1,13 @@
+<form action="/reviews/<%= review.id %>" method="POST">
+  <label>Rating
+    <select name="rating" required>
+      <% for (let i=5;i>=1;i--) { %>
+        <option value="<%= i %>" <%= review.rating === i ? 'selected' : '' %>><%= i %></option>
+      <% } %>
+    </select>
+  </label>
+  <label>Comment
+    <textarea name="content" required><%= review.content %></textarea>
+  </label>
+  <button type="submit">Save</button>
+</form>
