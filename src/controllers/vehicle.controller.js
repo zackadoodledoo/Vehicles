@@ -1,12 +1,11 @@
 // src/controllers/vehicle.controller.js
-// Controller for vehicle routes (index, show, new, create).
-// Uses ES module exports to match a modern Node setup.
 
 import {
   getVehicles,
   getVehicleById,
   createVehicle as createVehicleModel
 } from '../models/vehicle.model.js';
+
 import { getRecentReviews } from '../models/review.model.js';
 
 // ---------------------------------------------
@@ -21,7 +20,6 @@ function placeholderForCategory(slug) {
 }
 
 function resolveVehicleImage(vehicle) {
-  // Explicit image from DB (ignore bad legacy values)
   if (
     vehicle.image_url &&
     typeof vehicle.image_url === 'string' &&
@@ -32,17 +30,15 @@ function resolveVehicleImage(vehicle) {
     return vehicle.image_url.trim();
   }
 
-  // Derive image from title (Option 2)
   if (vehicle.title) {
     const slug = vehicle.title
       .toLowerCase()
-      .replace(/^\d+\s*/, '') // remove leading year
+      .replace(/^\d+\s*/, '')
       .replace(/[^a-z0-9]+/g, '-');
 
     return `/images/vehicles/makes/${slug}.jpg`;
   }
 
-  // Category placeholder fallback
   return placeholderForCategory(vehicle.category_slug);
 }
 
@@ -57,42 +53,22 @@ export async function showVehicleListings(req, res, next) {
     const limit = 24;
     const offset = (page - 1) * limit;
 
-    const vehiclesRaw = await getVehicles({
-      categorySlug,
-      limit,
-      offset
-    });
+    const vehiclesRaw = await getVehicles({ categorySlug, limit, offset });
 
-    const vehicles = (vehiclesRaw || []).map((v) => {
-      const rowSlug = (v.category_slug || categorySlug || '')
-        .toString()
-        .toLowerCase();
+    const vehicles = (vehiclesRaw || []).map(v => ({
+      id: v.id,
+      title: v.title,
+      year: v.year,
+      price: v.price,
+      mileage: v.mileage || null,
+      image_url: resolveVehicleImage(v),
+      category_slug: v.category_slug || null
+    }));
 
-      const image_url = resolveVehicleImage({
-        image_url: v.image_url,
-        title: v.title,
-        category_slug: rowSlug
-      });
-
-      return {
-        id: v.id,
-        title: v.title,
-        year: v.year,
-        price: v.price,
-        mileage: v.mileage || null,
-        image_url,
-        category_slug: v.category_slug || null
-      };
-    });
-
-    return res.render('vehicles/index', {
-      vehicles,
-      page,
-      category: categorySlug
-    });
+    return res.render('vehicles/index', { vehicles, page, category: categorySlug });
   } catch (err) {
     console.error('showVehicleListings error:', err);
-    return next(err);
+    next(err);
   }
 }
 
@@ -102,22 +78,18 @@ export async function showVehicleListings(req, res, next) {
 
 export async function showVehicleDetails(req, res, next) {
   try {
-    const id = req.params.id;
-    if (!id) return res.status(400).send('Vehicle id required');
-
-    const vehicle = await getVehicleById(id);
-
-    if (!vehicle) {
-      const err = new Error('Page Not Found');
-      err.status = 404;
-      return next(err);
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id)) {
+      return res.status(404).send('Vehicle not found');
     }
 
-    const image_url = resolveVehicleImage({
-      image_url: vehicle.image_url,
-      title: vehicle.title,
-      category_slug: vehicle.category_slug
-    });
+    const vehicle = await getVehicleById(id);
+    if (!vehicle) {
+      return res.status(404).send('Vehicle not found');
+    }
+
+    const image_url = resolveVehicleImage(vehicle);
+    const reviews = await getRecentReviews(id);
 
     return res.render('vehicles/show', {
       vehicle: { ...vehicle, image_url },
@@ -126,7 +98,7 @@ export async function showVehicleDetails(req, res, next) {
     });
   } catch (err) {
     console.error('showVehicleDetails error:', err);
-    return next(err);
+    next(err);
   }
 }
 
@@ -135,7 +107,7 @@ export async function showVehicleDetails(req, res, next) {
 // ---------------------------------------------
 
 export function newVehicleForm(req, res) {
-  return res.render('vehicles/create', { vehicle: {} });
+  res.render('vehicles/create', { vehicle: {} });
 }
 
 // ---------------------------------------------
@@ -171,9 +143,9 @@ export async function createVehicle(req, res, next) {
       description
     });
 
-    return res.redirect(`/vehicles/${newId}`);
+    res.redirect(`/vehicles/${newId}`);
   } catch (err) {
     console.error('createVehicle error:', err);
-    return next(err);
+    next(err);
   }
 }
