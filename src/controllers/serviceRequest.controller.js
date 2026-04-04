@@ -17,17 +17,22 @@ export async function submitServiceRequest(req, res, next) {
   try {
     const { vehicle_id, message } = req.body;
 
+    if (!vehicle_id) {
+      return res.status(400).send('Vehicle is required');
+    }
+
     await createServiceRequest({
       user_id: req.session.user.id,
-      vehicle_id,
+      vehicle_id: Number(vehicle_id),
       message
     });
 
-    res.redirect("/account/service-requests");
+    res.redirect('/account/service-requests');
   } catch (err) {
     next(err);
   }
 }
+
 
 
 export async function showUserRequests(req, res, next) {
