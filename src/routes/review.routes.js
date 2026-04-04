@@ -1,4 +1,3 @@
-// src/routes/review.routes.js
 import express from "express";
 import {
   submitReview,
@@ -9,6 +8,11 @@ import {
 import { requireLogin } from "../middleware/auth.js";
 
 const router = express.Router();
+
+// GET /reviews — safe redirect
+router.get("/reviews", (req, res) => {
+  res.redirect("/vehicles");
+});
 
 // submit a review (user must be logged in)
 router.post("/reviews", requireLogin, submitReview);
