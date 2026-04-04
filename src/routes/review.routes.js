@@ -1,12 +1,20 @@
 import express from "express";
-import { showReviews, showEditReview, updateReview, deleteReview } from "../controllers/review.controller.js";
+import {
+  submitReview,
+  showReviews,
+  showEditReview,
+  updateReview,
+  deleteReview
+} from "../controllers/review.controller.js";
 import { requireLogin, requireRole } from "../middleware/auth.js";
 
 const router = express.Router();
 
-
 // submit a review (user must be logged in)
 router.post("/reviews", requireLogin, submitReview);
+
+// list reviews (optional route)
+router.get("/reviews", showReviews);
 
 // edit form for a user's own review
 router.get("/reviews/:id/edit", requireLogin, showEditReview);
