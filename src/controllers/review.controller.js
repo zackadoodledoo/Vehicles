@@ -1,14 +1,13 @@
-// src/controllers/review.controller.js
-import db from "../db/index.js"; // your pg pool wrapper
-import { validationResult } from "express-validator";
+import db from "../db/index.js"; 
 
+// Create a new review (POST /reviews)
 export async function submitReview(req, res, next) {
   try {
-    const { vehicleId, rating, content } = req.body;
-    const userId = req.session.user.id;
+    const user = req.session?.user;
+    if (!user) return res.status(403).render("errors/403");
 
-    // basic server-side validation
-    if (!vehicleId || !rating || rating < 1 || rating > 5 || !content || content.trim().length < 3) {
+    const { vehicleId, rating, content } = req.body;
+    if (!vehicleId || !rating || !content || content.trim().length < 3) {
       return res.status(400).render("errors/400", { message: "Invalid review input" });
     }
 
@@ -17,13 +16,15 @@ export async function submitReview(req, res, next) {
       VALUES ($1, $2, $3, $4, now())
       RETURNING id;
     `;
-    const { rows } = await db.query(sql, [userId, vehicleId, rating, content.trim()]);
+    await db.query(sql, [user.id, Number(vehicleId), Number(rating), content.trim()]);
+
     res.redirect(`/vehicles/${vehicleId}#reviews`);
   } catch (err) {
     next(err);
   }
 }
 
+// Show edit form for a review (GET /reviews/:id/edit)
 export async function showEditReview(req, res, next) {
   try {
     const reviewId = Number(req.params.id);
@@ -31,8 +32,10 @@ export async function showEditReview(req, res, next) {
     const review = rows[0];
     if (!review) return res.status(404).render("errors/404");
 
-    // ownership check
-    const user = req.session.user;
+    const user = req.session?.user;
+    if (!user) return res.status(403).render("errors/403");
+
+    // ownership or admin/employee check
     if (review.user_id !== user.id && user.role !== "owner" && user.role !== "employee") {
       return res.status(403).render("errors/403");
     }
@@ -43,11 +46,13 @@ export async function showEditReview(req, res, next) {
   }
 }
 
+// Update a review (POST /reviews/:id)
 export async function updateReview(req, res, next) {
   try {
     const reviewId = Number(req.params.id);
     const { rating, content } = req.body;
-    const user = req.session.user;
+    const user = req.session?.user;
+    if (!user) return res.status(403).render("errors/403");
 
     const { rows } = await db.query("SELECT * FROM reviews WHERE id = $1", [reviewId]);
     const review = rows[0];
@@ -59,7 +64,7 @@ export async function updateReview(req, res, next) {
 
     await db.query(
       "UPDATE reviews SET rating = $1, content = $2, updated_at = now() WHERE id = $3",
-      [rating, content.trim(), reviewId]
+      [Number(rating), content.trim(), reviewId]
     );
 
     res.redirect(`/vehicles/${review.vehicle_id}#reviews`);
@@ -68,10 +73,12 @@ export async function updateReview(req, res, next) {
   }
 }
 
+// Delete a review (POST /reviews/:id/delete)
 export async function deleteReview(req, res, next) {
   try {
     const reviewId = Number(req.params.id);
-    const user = req.session.user;
+    const user = req.session?.user;
+    if (!user) return res.status(403).render("errors/403");
 
     const { rows } = await db.query("SELECT * FROM reviews WHERE id = $1", [reviewId]);
     const review = rows[0];
