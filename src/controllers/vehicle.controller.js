@@ -119,7 +119,8 @@ export async function showVehicleDetails(req, res, next) {
     });
 
     return res.render('vehicles/show', {
-      vehicle: { ...vehicle, image_url }
+      vehicle: { ...vehicle, image_url },
+      session: req.session
     });
   } catch (err) {
     console.error('showVehicleDetails error:', err);
