@@ -1,6 +1,6 @@
 import {
   createServiceRequest,
-  getUserServiceRequests,
+  getServiceRequestsByUser,
   getAllServiceRequests,
   updateServiceStatus
 } from '../models/serviceRequest.model.js';
@@ -32,7 +32,7 @@ export async function submitServiceRequest(req, res, next) {
 
 export async function showUserRequests(req, res, next) {
   try {
-    const requests = await getUserServiceRequests(req.session.user.id);
+    const requests = await getServiceRequestsByUser(req.session.user.id);
     res.render('account/service-requests', { requests, user: req.session.user });
   } catch (err) {
     next(err);
