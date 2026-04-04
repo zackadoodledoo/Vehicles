@@ -110,6 +110,15 @@ app.use((req, res, next) => {
   next();
 });
 
+
+/* -----------------------------
+   Make session available to all views
+-------------------------------- */
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
+
 /* -----------------------------
    Provide a default title for all views
 -------------------------------- */
