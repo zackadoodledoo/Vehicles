@@ -131,7 +131,6 @@ app.use(express.static(path.join(__dirname, "src", "public")));
    Routes
 -------------------------------- */
 app.use("/", publicRoutes);
-app.use("/", reviewRoutes)
 app.use(authRoutes);
 app.use(dashboardRoutes);
 //app.use(adminRoutes);
