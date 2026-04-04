@@ -70,4 +70,24 @@ All accounts use the password: You should know the testing password! (see instru
 
 - Vehicle image uploads are currently limited to placeholder images. (If vehicle images fail to load)
 - Pagination is not implemented on vehicle listings.
+- The reviews.ejs edit form redirects back to the vehicle page using the vehicle ID stored on the review row; if the vehicle has been deleted the redirect goes to a 404.
 
+## Getting started
+
+Clone the repo and install dependencies:
+npm install
+
+Copy the environment template and fill in your values:
+cp .env.example .env
+
+## Start the development server:
+npm start
+
+## Technology Stack:
+-Runtime: Node.js (ESM — no CommonJS)
+-Framework: Express.js
+-Views: EJS with partials
+-Database: PostgreSQL via pg connection pool
+-Auth: express-session + bcrypt password hashing
+-Sessions: Persisted to PostgreSQL via connect-pg-simple
+-Deployment: Render (web service + managed PostgreSQL)
