@@ -2,7 +2,7 @@ import {
   createServiceRequest,
   getServiceRequestsByUser,
   getAllServiceRequests,
-  updateServiceStatus
+  updateServiceRequestStatus
 } from '../models/serviceRequest.model.js';
 
 export async function showNewServiceRequestForm(req, res, next) {
@@ -57,7 +57,7 @@ export async function updateRequestStatus(req, res, next) {
       return res.status(400).send('Invalid status');
     }
 
-    await updateServiceStatus(req.params.id, status);
+    await updateServiceRequestStatus(req.params.id, status);
     return res.redirect(303, '/admin/service-requests');
   } catch (err) {
     next(err);
