@@ -7,6 +7,7 @@ import {
   getVehicleById,
   createVehicle as createVehicleModel
 } from '../models/vehicle.model.js';
+import { getRecentReviews } from '../models/review.model.js';
 
 // ---------------------------------------------
 // Image helpers
@@ -120,7 +121,7 @@ export async function showVehicleDetails(req, res, next) {
 
     return res.render('vehicles/show', {
       vehicle: { ...vehicle, image_url },
-      reviews: [], // placeholder for future reviews
+      reviews,
       session: req.session
     });
   } catch (err) {

@@ -40,7 +40,7 @@ export async function getServiceRequestsByUser(userId) {
       sr.created_at,
       v.title AS vehicle_title
     FROM service_requests sr
-    JOIN vehicles v ON sr.vehicle_id = v.id
+    LEFT JOIN vehicles v ON sr.vehicle_id = v.id
     WHERE sr.user_id = $1
     ORDER BY sr.created_at DESC
   `;
@@ -63,7 +63,7 @@ export async function getAllServiceRequests() {
       v.title AS vehicle_title
     FROM service_requests sr
     JOIN users u ON sr.user_id = u.id
-    JOIN vehicles v ON sr.vehicle_id = v.id
+    LEFT JOIN vehicles v ON sr.vehicle_id = v.id
     ORDER BY sr.created_at DESC
   `;
 

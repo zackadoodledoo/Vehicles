@@ -26,7 +26,7 @@ export async function getRecentReviews(vehicleId) {
     WHERE r.vehicle_id = $1
     ORDER BY r.created_at DESC
     `,
-    [vehicleId]
+    [Number(vehicleId)]
   );
 
   return result.rows;
