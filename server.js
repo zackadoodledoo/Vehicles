@@ -17,6 +17,7 @@ import serviceRequestRoutes from "./src/routes/serviceRequest.routes.js";
 import reviewRoutes from "./src/routes/review.routes.js";
 import contactRoutes from "./src/routes/contact.routes.js";
 import aboutRoutes from "./src/routes/about.routes.js";
+import { connectionString } from "pg/lib/defaults";
 
 
 
@@ -32,6 +33,7 @@ const __dirname = path.dirname(__filename);
 -------------------------------- */
 const app = express();
 const PgSession = pgSession(session);
+const pool = new pg.Pool({connectionString: process.env.DATABASE_URL });
 
 app.use((req, res, next) => {
   console.log("TOP middleware hit:", req.path);
@@ -84,23 +86,18 @@ app.use(methodOverride("_method"));
 /* -----------------------------
    Session configuration
 -------------------------------- */
-app.use(
-  session({
-      store: new PgSession({
-         pool,
-         tableName: "session",
-         createTableIfMissing: true,
-      }),
-
-         secret: process.env.SESSION_SECRET,
-         resave: false,
-         saveUninitialized: false,
-         cookie: {
-            httpOnly: true,
-            sameSite: "lax",
-         },
-   })
-);
+app.use(session({
+  store: new PgSession({ pool }),
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  }
+}));
 
 /* -----------------------------
    Make user available to all views - Globally
