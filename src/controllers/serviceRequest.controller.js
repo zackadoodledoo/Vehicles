@@ -4,10 +4,16 @@ import {
   getAllServiceRequests,
   updateServiceRequestStatus
 } from '../models/serviceRequest.model.js';
+import { getVehicles } from '../models/vehicle.model.js';
 
 export async function showNewServiceRequestForm(req, res, next) {
   try {
-    res.render('service-requests/new', { user: req.session.user });
+    const vehicles = await getVehicles();
+
+    res.render('service-requests/new', {
+      user: req.session.user,
+      vehicles
+    });
   } catch (err) {
     next(err);
   }
