@@ -15,28 +15,20 @@ export async function showNewServiceRequestForm(req, res, next) {
 
 export async function submitServiceRequest(req, res, next) {
   try {
-    const userId = req.session.user.id;
-    const { vehicle_id, service_type, description } = req.body;
-
-    if (!service_type || !service_type.trim()) {
-      return res.status(400).render('service-requests/new', {
-        user: req.session.user,
-        error: 'Service type is required.'
-      });
-    }
+    const { vehicle_id, message } = req.body;
 
     await createServiceRequest({
-      userId,
-      vehicleId: vehicle_id ? Number(vehicle_id) : null,
-      serviceType: service_type.trim(),
-      description: (description || '').trim()
+      user_id: req.session.user.id,
+      vehicle_id,
+      message
     });
 
-    return res.redirect('/account/service-requests');
+    res.redirect("/account/service-requests");
   } catch (err) {
     next(err);
   }
 }
+
 
 export async function showUserRequests(req, res, next) {
   try {

@@ -1,52 +1,85 @@
-import pool from '../db/index.js';
+import pool from "../db/index.js";
 
-export async function createServiceRequest({ userId, vehicleId, serviceType, description }) {
-  await pool.query(
-    `
-    INSERT INTO service_requests (user_id, vehicle_id, service_type, description)
-    VALUES ($1, $2, $3, $4)
-    `,
-    [userId, vehicleId, vehicleId ? serviceType : serviceType, description]
-  );
+/**
+ * Create a new service request
+ */
+export async function createServiceRequest({
+  user_id,
+  vehicle_id,
+  message
+}) {
+  const sql = `
+    INSERT INTO service_requests (
+      user_id,
+      vehicle_id,
+      message,
+      status
+    )
+    VALUES ($1, $2, $3, 'pending')
+    RETURNING id
+  `;
+
+  const result = await pool.query(sql, [
+    user_id,
+    vehicle_id,
+    message
+  ]);
+
+  return result.rows[0].id;
 }
 
-export async function getUserServiceRequests(userId) {
-  const result = await pool.query(
-    `
-    SELECT sr.*, v.title AS vehicle_title
-    FROM service_requests sr
-    LEFT JOIN vehicles v ON sr.vehicle_id = v.id
-    WHERE sr.user_id = $1
-    ORDER BY sr.created_at DESC
-    `,
-    [userId]
-  );
-  return result.rows;
-}
-
-export async function getAllServiceRequests() {
-  const result = await pool.query(
-    `
+/**
+ * Get service requests for a user
+ */
+export async function getServiceRequestsByUser(userId) {
+  const sql = `
     SELECT
-      sr.*,
-      u.name AS requester_name,
+      sr.id,
+      sr.message,
+      sr.status,
+      sr.created_at,
       v.title AS vehicle_title
     FROM service_requests sr
-    LEFT JOIN users u ON sr.user_id = u.id
-    LEFT JOIN vehicles v ON sr.vehicle_id = v.id
+    JOIN vehicles v ON sr.vehicle_id = v.id
+    WHERE sr.user_id = $1
     ORDER BY sr.created_at DESC
-    `
-  );
+  `;
+
+  const result = await pool.query(sql, [userId]);
   return result.rows;
 }
 
-export async function updateServiceStatus(id, status) {
-  await pool.query(
-    `
+/**
+ * Get all service requests (admin / employee)
+ */
+export async function getAllServiceRequests() {
+  const sql = `
+    SELECT
+      sr.id,
+      sr.message,
+      sr.status,
+      sr.created_at,
+      u.email AS user_email,
+      v.title AS vehicle_title
+    FROM service_requests sr
+    JOIN users u ON sr.user_id = u.id
+    JOIN vehicles v ON sr.vehicle_id = v.id
+    ORDER BY sr.created_at DESC
+  `;
+
+  const result = await pool.query(sql);
+  return result.rows;
+}
+
+/**
+ * Update service request status
+ */
+export async function updateServiceRequestStatus(id, status) {
+  const sql = `
     UPDATE service_requests
     SET status = $1
     WHERE id = $2
-    `,
-    [status, id]
-  );
+  `;
+
+  await pool.query(sql, [status, id]);
 }
