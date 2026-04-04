@@ -57,8 +57,6 @@ export async function getLatestVehicles(limit = 12) {
     SELECT
       id,
       title,
-      make,
-      model,
       year,
       price
     FROM vehicles
@@ -77,8 +75,6 @@ export async function createVehicle(data) {
   const {
     title,
     year,
-    make = null,
-    model = null,
     price = null,
     mileage = null,
     image_url = null,
@@ -90,23 +86,19 @@ export async function createVehicle(data) {
     INSERT INTO vehicles (
       title,
       year,
-      make,
-      model,
       price,
       mileage,
       image_url,
       category_id,
       description
     )
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+    VALUES ($1,$2,$3,$4,$5,$6,$7)
     RETURNING id
   `;
 
   const result = await pool.query(sql, [
     title,
     year,
-    make,
-    model,
     price,
     mileage,
     image_url,
