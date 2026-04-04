@@ -1,20 +1,25 @@
-<%- include('../partials/header', { title: 'Your Service Requests' }) %>
+<%- include("../partials/header", { title: "My Service Requests" }) %>
 
-<h2>Your Service Requests</h2>
+<h1>My Service Requests</h1>
 
-<p><a class="btn" href="/service-requests/new">Submit a Service Request</a></p>
+<p><a class="btn" href="/service-requests/new">Submit a New Request</a></p>
 
 <% if (!requests || requests.length === 0) { %>
-  <p>No service requests yet.</p>
+  <p>You have no service requests yet.</p>
+<% } else { %>
+  <ul class="request-list">
+    <%# FIX: was using r.title, r.service_type, r.description — none of these
+         columns exist on service_requests. Correct fields from the model:
+         vehicle_title, message, status, created_at %>
+    <% requests.forEach(r => { %>
+      <li class="card">
+        <p><strong>Vehicle:</strong> <%= r.vehicle_title || '— Vehicle removed —' %></p>
+        <p><strong>Request:</strong> <%= r.message %></p>
+        <p><strong>Status:</strong> <span class="status-badge status-<%= r.status %>"><%= r.status.replace('_', ' ') %></span></p>
+        <p><small>Submitted: <%= new Date(r.created_at).toLocaleDateString() %></small></p>
+      </li>
+    <% }) %>
+  </ul>
 <% } %>
 
-<% (requests || []).forEach(r => { %>
-  <div class="card">
-    <p><strong>Vehicle:</strong> <%= r.vehicle_title || '—' %></p>
-    <p><strong>Service:</strong> <%= r.service_type %></p>
-    <p><strong>Status:</strong> <%= r.status %></p>
-    <% if (r.description) { %><p><%= r.description %></p><% } %>
-  </div>
-<% }) %>
-
-<%- include('../partials/footer') %>
+<%- include("../partials/footer") %>

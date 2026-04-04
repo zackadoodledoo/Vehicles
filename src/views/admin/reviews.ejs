@@ -1,0 +1,41 @@
+<%- include("../partials/header", { title: "Review Moderation" }) %>
+
+<h1>Review Moderation</h1>
+
+<% if (!reviews || reviews.length === 0) { %>
+  <p>No reviews to moderate.</p>
+<% } else { %>
+  <table>
+    <thead>
+      <tr>
+        <th>Reviewer</th>
+        <th>Vehicle</th>
+        <th>Rating</th>
+        <th>Content</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% reviews.forEach(review => { %>
+        <tr>
+          <td><%= review.reviewer || 'Anonymous' %></td>
+          <td><%= review.vehicle_title || '—' %></td>
+          <td><%= review.rating %>/5</td>
+          <td><%= review.content %></td>
+          <td><%= new Date(review.created_at).toLocaleDateString() %></td>
+          <td>
+            <form method="POST" action="/admin/reviews/<%= review.id %>/delete"
+                  onsubmit="return confirm('Delete this review?')">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<p><a href="/admin">← Back to Admin Dashboard</a></p>
+
+<%- include("../partials/footer") %>

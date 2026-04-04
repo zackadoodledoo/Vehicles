@@ -1,25 +1,47 @@
-<%- include("../partials/header") %>
+<%- include("../partials/header", { title: "Service Requests — Admin" }) %>
 
-<h1>Service Requests Dashboard</h1>
+<h1>Service Requests</h1>
 
-<ul>
-  <% requests.forEach(req => { %>
-    <li>
-      <strong>User:</strong> <%= req.email %><br />
-      <strong>Vehicle:</strong> <%= req.title || "Vehicle Removed" %><br />
-      <strong>Status:</strong> <%= req.status %><br />
-      <strong>Message:</strong> <%= req.message %>
+<% if (!requests || requests.length === 0) { %>
+  <p>No service requests yet.</p>
+<% } else { %>
+  <table>
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Vehicle</th>
+        <th>Message</th>
+        <th>Status</th>
+        <th>Submitted</th>
+        <th>Update Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% requests.forEach(req => { %>
+        <tr>
+          <td><%= req.user_email %></td>
+          <td><%= req.vehicle_title || '— removed —' %></td>
+          <td><%= req.message %></td>
+          <td><span class="status-badge status-<%= req.status %>"><%= req.status.replace('_',' ') %></span></td>
+          <td><%= new Date(req.created_at).toLocaleDateString() %></td>
+          <td>
+            <%# FIX: was POSTing to /admin/service-requests/:id (no /status suffix)
+                 which didn't match the route definition. Correct path adds /status. %>
+            <form action="/admin/service-requests/<%= req.id %>/status" method="POST">
+              <select name="status">
+                <option value="submitted"   <%= req.status === 'submitted'   ? 'selected' : '' %>>Submitted</option>
+                <option value="in_progress" <%= req.status === 'in_progress' ? 'selected' : '' %>>In Progress</option>
+                <option value="completed"   <%= req.status === 'completed'   ? 'selected' : '' %>>Completed</option>
+              </select>
+              <button type="submit">Update</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
 
-      <form action="/admin/service-requests/<%= req.id %>" method="POST">
-        <select name="status">
-          <option value="submitted">Submitted</option>
-          <option value="in_progress">In Progress</option>
-          <option value="completed">Completed</option>
-        </select>
-        <button type="submit">Update Status</button>
-      </form>
-    </li>
-  <% }) %>
-</ul>
+<p><a href="/admin">← Back to Admin Dashboard</a></p>
 
 <%- include("../partials/footer") %>

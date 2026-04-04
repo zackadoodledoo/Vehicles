@@ -1,0 +1,59 @@
+<%- include("../partials/header", { title: "Manage Categories" }) %>
+
+<h1>Vehicle Categories</h1>
+
+<!-- Add new category -->
+<section>
+  <h2>Add Category</h2>
+  <form method="POST" action="/admin/categories">
+    <label>
+      Category Name
+      <input type="text" name="name" required placeholder="e.g. SUVs">
+    </label>
+    <button type="submit">Add Category</button>
+  </form>
+</section>
+
+<!-- Existing categories -->
+<section>
+  <h2>Existing Categories</h2>
+
+  <% if (!categories || categories.length === 0) { %>
+    <p>No categories yet.</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Slug</th>
+          <th>Rename</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% categories.forEach(cat => { %>
+          <tr>
+            <td><%= cat.name %></td>
+            <td><%= cat.slug %></td>
+            <td>
+              <form method="POST" action="/admin/categories/<%= cat.id %>">
+                <input type="text" name="name" value="<%= cat.name %>" required>
+                <button type="submit">Save</button>
+              </form>
+            </td>
+            <td>
+              <form method="POST" action="/admin/categories/<%= cat.id %>/delete"
+                    onsubmit="return confirm('Delete this category? Vehicles in it will become uncategorised.')">
+                <button type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<p><a href="/admin">← Back to Admin Dashboard</a></p>
+
+<%- include("../partials/footer") %>

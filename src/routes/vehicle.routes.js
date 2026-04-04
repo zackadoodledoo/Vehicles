@@ -1,17 +1,21 @@
 import { Router } from "express";
 import { requireLogin, requireRole } from "../middleware/auth.js";
-import { showVehicleListings, showVehicleDetails, newVehicleForm, createVehicle } from "../controllers/vehicle.controller.js";
+import {
+  showVehicleListings,
+  showVehicleDetails,
+  newVehicleForm,
+  createVehicle
+} from "../controllers/vehicle.controller.js";
 
 const router = Router();
 
-// Public routes
 router.get("/vehicles", showVehicleListings);
-// Owner-only routes
+
+// FIX: /vehicles/new MUST come before /vehicles/:id
+// Previously "new" was being captured as :id, causing a 404
 router.get("/vehicles/new", requireRole("owner"), newVehicleForm);
 
 router.get("/vehicles/:id", showVehicleDetails);
-
-// Create 
 router.post("/vehicles", requireRole("owner"), createVehicle);
 
 export default router;

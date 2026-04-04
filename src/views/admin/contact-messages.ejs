@@ -1,0 +1,32 @@
+<%- include("../partials/header", { title: "Contact Messages" }) %>
+
+<h1>Contact Form Submissions</h1>
+
+<% if (!messages || messages.length === 0) { %>
+  <p>No messages yet.</p>
+<% } else { %>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Message</th>
+        <th>Received</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% messages.forEach(m => { %>
+        <tr>
+          <td><%= m.name %></td>
+          <td><a href="mailto:<%= m.email %>"><%= m.email %></a></td>
+          <td><%= m.message %></td>
+          <td><%= new Date(m.created_at).toLocaleString() %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<p><a href="/admin">← Back to Admin Dashboard</a></p>
+
+<%- include("../partials/footer") %>

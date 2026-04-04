@@ -1,13 +1,24 @@
+<%# FIX: header and footer partials were missing — this view rendered as a bare
+     HTML fragment with no <html>, <head>, or <body> wrapper. %>
+<%- include('../partials/header', { title: 'Edit Review' }) %>
+
+<h1>Edit Review</h1>
+
 <form action="/reviews/<%= review.id %>" method="POST">
   <label>Rating
     <select name="rating" required>
-      <% for (let i=5;i>=1;i--) { %>
+      <% for (let i = 5; i >= 1; i--) { %>
         <option value="<%= i %>" <%= review.rating === i ? 'selected' : '' %>><%= i %></option>
       <% } %>
     </select>
   </label>
+
   <label>Comment
-    <textarea name="content" required><%= review.content %></textarea>
+    <textarea name="content" required minlength="3"><%= review.content %></textarea>
   </label>
-  <button type="submit">Save</button>
+
+  <button type="submit">Save Changes</button>
+  <a href="/vehicles/<%= review.vehicle_id %>">Cancel</a>
 </form>
+
+<%- include('../partials/footer') %>

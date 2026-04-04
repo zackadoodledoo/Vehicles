@@ -1,8 +1,9 @@
-<%- include("../partials/header") %>
+<%- include("../partials/header", { title: "Edit Vehicle" }) %>
 
 <h1>Edit Vehicle</h1>
 
 <form method="POST" action="/admin/vehicles/<%= vehicle.id %>">
+
   <label>
     Title
     <input name="title" value="<%= vehicle.title %>" required>
@@ -10,7 +11,7 @@
 
   <label>
     Year
-    <input type="number" name="year" value="<%= vehicle.year %>">
+    <input type="number" name="year" value="<%= vehicle.year %>" required>
   </label>
 
   <label>
@@ -20,14 +21,40 @@
 
   <label>
     Price
-    <input type="number" name="price" value="<%= vehicle.price %>">
+    <input type="number" name="price" step="0.01" value="<%= vehicle.price %>">
+  </label>
+
+  <%# FIX: image_url, description, and category_id were missing.
+       updateVehicle() passes all 7 fields to the DB — without these inputs
+       they arrive as undefined and overwrite saved data with NULL. %>
+
+  <label>
+    Image URL
+    <input type="url" name="image_url" value="<%= vehicle.image_url || '' %>" placeholder="https://...">
+  </label>
+
+  <label>
+    Description
+    <textarea name="description" rows="4"><%= vehicle.description || '' %></textarea>
+  </label>
+
+  <label>
+    Category
+    <select name="category_id">
+      <option value="">— None —</option>
+      <% if (typeof categories !== 'undefined') { %>
+        <% categories.forEach(c => { %>
+          <option value="<%= c.id %>" <%= vehicle.category_id == c.id ? 'selected' : '' %>>
+            <%= c.name %>
+          </option>
+        <% }) %>
+      <% } %>
+    </select>
   </label>
 
   <button type="submit">Save Changes</button>
 </form>
 
-<p>
-  <a href="/admin/vehicles">← Back to Vehicle Management</a>
-</p>
+<p><a href="/admin/vehicles">← Back to Vehicle Management</a></p>
 
 <%- include("../partials/footer") %>

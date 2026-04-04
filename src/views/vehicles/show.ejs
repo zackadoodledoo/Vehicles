@@ -12,68 +12,82 @@
   </div>
 
   <div class="card-body">
-    <h2 class="card-title"><%= vehicle && vehicle.title ? vehicle.title : 'Vehicle' %></h2>
+    <h2 class="card-title"><%= vehicle.title || 'Vehicle' %></h2>
 
     <p class="card-meta">
       <span class="price">
-        $<%= vehicle && vehicle.price != null ? Number(vehicle.price).toLocaleString() : '0' %>
+        $<%= vehicle.price != null ? Number(vehicle.price).toLocaleString() : 'Contact us' %>
       </span>
-
-      <% if (vehicle && vehicle.mileage) { %>
+      <% if (vehicle.mileage) { %>
         <span class="mileage"><%= Number(vehicle.mileage).toLocaleString() %> mi</span>
       <% } %>
     </p>
 
     <section class="details">
-      <p><strong>Year</strong>: <%= vehicle.year || '—' %></p>
-      <p><strong>Description</strong>: <%= vehicle.description || 'No description available.' %></p>
+      <p><strong>Year:</strong> <%= vehicle.year || '—' %></p>
+      <p><strong>Description:</strong> <%= vehicle.description || 'No description available.' %></p>
     </section>
+
+    <% if (session && session.user) { %>
+      <p>
+        <a class="btn" href="/service-requests/new">Request Service for This Vehicle</a>
+      </p>
+    <% } %>
   </div>
 </article>
 
 <!-- ========================= -->
-<!-- Reviews Section -->
+<!-- Reviews Section           -->
 <!-- ========================= -->
+<section id="reviews">
+  <h2>Reviews</h2>
 
-<!-- src/views/vehicles/show.ejs -->
-<h2>Reviews</h2>
+  <% if (session && session.user) { %>
+    <form action="/reviews" method="POST" id="review-form">
+      <input type="hidden" name="vehicleId" value="<%= vehicle.id %>">
 
-<% if (session && session.user) { %>
-  <form action="/reviews" method="POST" id="review-form">
-    <input type="hidden" name="vehicleId" value="<%= vehicle.id %>">
-    <label>Rating
-      <select name="rating" required>
-        <option value="5">5</option>
-        <option value="4">4</option>
-        <option value="3">3</option>
-        <option value="2">2</option>
-        <option value="1">1</option>
-      </select>
-    </label>
-    <label>Comment
-      <textarea name="content" required minlength="3"></textarea>
-    </label>
-    <button type="submit">Submit Review</button>
-  </form>
-<% } else { %>
-  <p><a href="/login">Log in</a> to leave a review.</p>
-<% } %>
+      <label>Rating
+        <select name="rating" required>
+          <option value="5">5 — Excellent</option>
+          <option value="4">4 — Good</option>
+          <option value="3">3 — Average</option>
+          <option value="2">2 — Poor</option>
+          <option value="1">1 — Terrible</option>
+        </select>
+      </label>
 
-<ul id="reviews">
-  <% reviews.forEach(r => { %>
-    <li id="review-<%= r.id %>">
-      <strong><%= r.username %></strong> — <%= r.rating %>/5
-      <p><%= r.content %></p>
-      <small><%= new Date(r.created_at).toLocaleString() %></small>
-      <% if (session?.user && (session.user.id === r.user_id || session.user.role === 'owner' || session.user.role === 'employee')) { %>
-        <a href="/reviews/<%= r.id %>/edit">Edit</a>
-        <form action="/reviews/<%= r.id %>/delete" method="POST" style="display:inline">
-          <button type="submit">Delete</button>
-        </form>
-      <% } %>
-    </li>
-  <% }) %>
-</ul>
+      <label>Comment
+        <textarea name="content" required minlength="3" placeholder="Share your experience..."></textarea>
+      </label>
 
+      <button type="submit">Submit Review</button>
+    </form>
+  <% } else { %>
+    <p><a href="/login">Log in</a> to leave a review.</p>
+  <% } %>
+
+  <% if (!reviews || reviews.length === 0) { %>
+    <p>No reviews yet. Be the first!</p>
+  <% } %>
+
+  <ul class="reviews-list">
+    <% (reviews || []).forEach(r => { %>
+      <li id="review-<%= r.id %>">
+        <%# FIX: was r.username — model returns the column as 'name' (u.name aliased) %>
+        <strong><%= r.name || 'Anonymous' %></strong> — <%= r.rating %>/5
+        <%# FIX: was r.comment — column was renamed to 'content' in schema and model %>
+        <p><%= r.content %></p>
+        <small><%= new Date(r.created_at).toLocaleString() %></small>
+
+        <% if (session?.user && (session.user.id === r.user_id || session.user.role === 'owner' || session.user.role === 'employee')) { %>
+          <a href="/reviews/<%= r.id %>/edit">Edit</a>
+          <form action="/reviews/<%= r.id %>/delete" method="POST" style="display:inline">
+            <button type="submit" onclick="return confirm('Delete this review?')">Delete</button>
+          </form>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
+</section>
 
 <%- include('../partials/footer') %>
