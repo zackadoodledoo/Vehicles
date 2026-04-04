@@ -120,6 +120,7 @@ export async function showVehicleDetails(req, res, next) {
 
     return res.render('vehicles/show', {
       vehicle: { ...vehicle, image_url },
+      reviews: [], // placeholder for future reviews
       session: req.session
     });
   } catch (err) {
